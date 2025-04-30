@@ -187,12 +187,18 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
         install(FILES python/scheduler/__init__.py DESTINATION bin/python/scheduler/)
 
-        if(WIN32)
-            install(FILES $<TARGET_FILE_DIR:Scheduler>/_scheduler.pyd DESTINATION bin/)
-        elseif(APPLE)
-            install(FILES $<TARGET_FILE_NAME:Scheduler>  DESTINATION bin/)
-        endif()
-
-        install(FILES carbon-schedulerConfig.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/carbon-scheduler/)
+        install(
+                TARGETS Scheduler
+                EXPORT SchedulerTargets
+                CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
+                ARCHIVE DESTINATION lib/
+                LIBRARY DESTINATION lib/
+                RUNTIME DESTINATION bin/
+        )
+        install(
+                EXPORT SchedulerTargets
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/carbon-scheduler  # Calling this carbon-pdm
+                FILE carbon-schedulerConfig.cmake
+        )
     endif()
 endif()
