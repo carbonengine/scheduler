@@ -172,22 +172,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 FILES_MATCHING
                 PATTERN "*.py"
         )
-    elseif(INSTALL_MODE STREQUAL "BIN_ONLY")
-        # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
-        install(
-                TARGETS Scheduler
-                EXPORT SchedulerTargets
-                CONFIGURATIONS Release
-                RUNTIME DESTINATION bin/
-        )
-        # Install scheduler extension package
-        install(DIRECTORY python/scheduler DESTINATION bin/python/
-                FILES_MATCHING
-                PATTERN "*.py"
-        )
-        install(FILES ${GREENLET_IMPORTED_LOCATION} DESTINATION bin/)
     else() # "VCPKG" INSTALL_MODE, but there's no need for another option, as this will be the default
-        # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
+        # Install rule to ensure that our runtime and linker files are in the vcpkg structure
         install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
         install(FILES python/scheduler/__init__.py DESTINATION bin/python/scheduler/)
 
