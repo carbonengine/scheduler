@@ -5,6 +5,7 @@ include(cmake/CcpGlobalSettings.cmake)
 include(cmake/CcpVendorUtilities.cmake)
 include(cmake/CcpTargetConfigurations.cmake)
 include(cmake/CcpDocsGenerator.cmake)
+include(cmake/CcpPackageConfigHelpers.cmake)
 
 find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 find_package(greenlet CONFIG REQUIRED)
@@ -146,8 +147,32 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         set_tests_properties(${ALL_PYTHON_TEST} PROPERTIES ENVIRONMENT "PYTHONPATH=$ENV{PYTHONPATH};BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>")
     endif()
 
-    set(INSTALL_BIN_ONLY OFF CACHE BOOL "Do not Install configuration files meant to be read by projects using this project as a dependency (Cmake Config/ header files etc . . .). Set this to ON when installing this component to the perforce vendor folder")
-    if(INSTALL_BIN_ONLY)
+    set (INSTALL_MODE "PERFORCE" CACHE BOOL "Install this package to a perforce branch vendor folder - provided for backwards compatability")
+
+    if (INSTALL_MODE STREQUAL "PERFORCE")
+        install(
+                TARGETS Scheduler
+                EXPORT SchedulerTargets
+                CONFIGURATIONS Release
+                LIBRARY DESTINATION lib/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
+                ARCHIVE DESTINATION lib/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
+                RUNTIME DESTINATION bin/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
+        )
+        # Install rule for available public headers
+        install(FILES ${PUBLIC_HEADER_FILES} DESTINATION include)
+
+        configure_ccp_vendor_config_file(
+                TARGET Scheduler
+                DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/SchedulerConfig.cmake"
+                CONFIGURATIONS Release
+        )
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SchedulerConfig.cmake DESTINATION .)
+        # Install scheduler extension package
+        install(DIRECTORY python/scheduler DESTINATION python
+                FILES_MATCHING
+                PATTERN "*.py"
+        )
+    elseif(INSTALL_MODE STREQUAL "BIN_ONLY")
         # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
         install(
                 TARGETS Scheduler
@@ -161,7 +186,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 PATTERN "*.py"
         )
         install(FILES ${GREENLET_IMPORTED_LOCATION} DESTINATION bin/)
-    else()
+    else() # "VCPKG" INSTALL_MODE, but there's no need for another option, as this will be the default
         # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
         install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
         install(FILES python/scheduler/__init__.py DESTINATION bin/python/scheduler/)
