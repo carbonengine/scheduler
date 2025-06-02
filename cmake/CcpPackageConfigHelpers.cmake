@@ -1,4 +1,6 @@
 #[===[
+Note: Use of this file is deprecated, but is being kept around for backwards compatability purposes. It will be deleted soon
+
 Helpers functions for creating config files that can be included by the EVE monolith.
 
 Adds the `configure_ccp_vendor_config_file` command.
