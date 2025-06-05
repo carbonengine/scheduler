@@ -11,7 +11,7 @@ endif()
 
 if(APPLE)
     set_target_properties(Scheduler PROPERTIES
-        IMPORTED_LOCATION "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin/_scheduler.so"
+        IMPORTED_LOCATION "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/_scheduler.so"
     )
 elseif(WIN32)
     set_target_properties(Scheduler PROPERTIES
