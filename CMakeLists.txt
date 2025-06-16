@@ -36,7 +36,7 @@ set(SRC_FILES
 )
 
 set(PUBLIC_HEADER_FILES include/Scheduler.h)
-ccp_add_library(Scheduler SHARED ${SRC_FILES})
+ccp_add_library(Scheduler MODULE ${SRC_FILES})
 
 target_include_directories(Scheduler
         PUBLIC
@@ -155,7 +155,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
                 CONFIGURATIONS Release
-                RUNTIME DESTINATION bin/
+                LIBRARY DESTINATION bin/
         )
         # Install scheduler extension package
         install(DIRECTORY python/scheduler DESTINATION bin/python/
@@ -168,14 +168,16 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
                 CONFIGURATIONS Release
-                RUNTIME DESTINATION bin/
-                ARCHIVE DESTINATION lib/
                 LIBRARY DESTINATION lib/
         )
         # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
         install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
         install(DIRECTORY python/scheduler DESTINATION bin/python FILES_MATCHING PATTERN "*.py")
 
-        install(FILES carbon-schedulerConfig.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/carbon-scheduler/)
+        install(
+                EXPORT SchedulerTargets
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/carbon-scheduler
+                FILE carbon-schedulerConfig.cmake
+        )
     endif()
 endif()
