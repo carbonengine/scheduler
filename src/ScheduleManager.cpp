@@ -1,5 +1,7 @@
 #include "ScheduleManager.h"
 
+#include <CcpTelemetry.h>
+
 #include "Tasklet.h"
 #include "PyTasklet.h"
 #include "PyScheduleManager.h"
@@ -392,6 +394,7 @@ bool ScheduleManager::RunTaskletsForTime( long long timeout )
 
 bool ScheduleManager::RunNTasklets( int n )
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::Run()", __FILE__, __LINE__, tracy::Color::LightGreen);
     m_taskletLimit = n;
 
     m_runType = RunType::TASKLET_LIMITED;
@@ -409,6 +412,7 @@ bool ScheduleManager::RunNTasklets( int n )
 
 bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::Run()", __FILE__, __LINE__, tracy::Color::LightGreen);
     Tasklet* baseTasklet = nullptr;
 
     Tasklet* endTasklet = nullptr;
