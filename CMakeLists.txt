@@ -20,6 +20,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${BRANCH_ROOT_DIR}/cmake)
 include(CcpGlobalSettings)
 include(CcpPackageConfigHelpers)
 
+find_package(CcpCore REQUIRED NO_CMAKE_PATH)
 find_package(Python REQUIRED NO_CMAKE_PATH)
 find_package(Greenlet REQUIRED NO_CMAKE_PATH)
 
@@ -58,6 +59,7 @@ ccp_add_library(Scheduler SHARED ${SRC_FILES})
 target_include_directories(Scheduler PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 
 target_link_libraries(Scheduler PRIVATE Python)
+target_link_libraries(Scheduler PUBLIC CcpCore)
 
 target_include_directories(Scheduler
         PRIVATE
