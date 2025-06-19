@@ -76,7 +76,6 @@ target_precompile_headers(Scheduler PRIVATE src/stdafx.h)
 
 set_target_properties(Scheduler PROPERTIES
     OUTPUT_NAME "_scheduler"
-    DEBUG_POSTFIX ""
 )
 
 # Provide an install target iff this is the top level project only
@@ -144,7 +143,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     install(
         TARGETS Scheduler
         EXPORT SchedulerTargets
-        CONFIGURATIONS Release
+        CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
         LIBRARY DESTINATION lib/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
         ARCHIVE DESTINATION lib/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
         RUNTIME DESTINATION bin/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
@@ -155,7 +154,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     configure_ccp_vendor_config_file(
         TARGET Scheduler
         DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/SchedulerConfig.cmake"
-        CONFIGURATIONS Release
+        CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
     )
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SchedulerConfig.cmake DESTINATION .)
 
