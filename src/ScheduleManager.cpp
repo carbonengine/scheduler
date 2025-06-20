@@ -394,7 +394,7 @@ bool ScheduleManager::RunTaskletsForTime( long long timeout )
 
 bool ScheduleManager::RunNTasklets( int n )
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::Run()", __FILE__, __LINE__, tracy::Color::LightGreen);
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunNTasklets()", __FILE__, __LINE__, tracy::Color::LightGreen);
     m_taskletLimit = n;
 
     m_runType = RunType::TASKLET_LIMITED;
