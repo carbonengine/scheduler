@@ -367,6 +367,7 @@ bool ScheduleManager::Yield()
 
 bool ScheduleManager::RunTaskletsForTime( long long timeout )
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunTaskletsForTime()", __FILE__, __LINE__, tracy::Color::LightGreen);
 	s_numberOfTaskletsCompletedLastRunWithTimeout = 0;
 
     s_numberOfTaskletsSwitchedLastRunWithTimeout = 0;
