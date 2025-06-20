@@ -277,7 +277,33 @@ void InterpreterWithSchedulerModule::SetUp()
 	}
 	PyConfig_Clear( &config );
 
-	m_schedulerModule = PyImport_ImportModule( "_scheduler" );
+	const char* buildflavor = std::getenv( "BUILDFLAVOR" );
+
+	if( strcasecmp( buildflavor, "release" ) == 0 )
+	{
+		m_schedulerModule = PyImport_ImportModule( "_scheduler" );
+	}
+	else if( strcasecmp( buildflavor, "internal" ) == 0 )
+	{
+		m_schedulerModule = PyImport_ImportModule( "_scheduler_internal" );
+	}
+	else if( strcasecmp( buildflavor, "trinitydev" ) == 0 )
+	{
+		m_schedulerModule = PyImport_ImportModule( "_scheduler_trinitydev" );
+	}
+	else if( strcasecmp( buildflavor, "debug" ) == 0 )
+	{
+		m_schedulerModule = PyImport_ImportModule( "_scheduler_debug" );
+	}
+
+	auto* sys_modules = PyImport_GetModuleDict();
+	if ( PyDict_SetItemString(sys_modules, "_scheduler", m_schedulerModule) == -1 ) {
+		PyErr_Print();
+		PySys_WriteStdout( "Failed inserting _scheduler into sys.modules" );
+		exit( -1 );
+	}
+	Py_DecRef(sys_modules);
+
 	if ( !m_schedulerModule )
 	{
 		PyErr_Print();
