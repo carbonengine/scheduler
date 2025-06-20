@@ -64,9 +64,19 @@ add_dependencies(SchedulerCapiTest GeneratePackagePathsHeader)
 
 add_custom_command(
   TARGET SchedulerCapiTest POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy 
+  COMMAND ${CMAKE_COMMAND} -E copy
     ${Python_ROOT}/${CCP_VENDOR_BIN_PATH}/${PythonLibName}
-    $<TARGET_FILE_DIR:SchedulerCapiTest>)
+    $<TARGET_FILE_DIR:SchedulerCapiTest>
+)
+if(MSVC)
+    add_custom_command(
+        TARGET SchedulerCapiTest POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_RUNTIME_DLLS:SchedulerCapiTest>
+        $<TARGET_FILE_DIR:SchedulerCapiTest>
+      COMMAND_EXPAND_LISTS
+    )
+endif()
 
 gtest_discover_tests(SchedulerCapiTest capiTests
     DISCOVERY_MODE PRE_TEST

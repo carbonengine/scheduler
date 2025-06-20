@@ -77,6 +77,15 @@ target_precompile_headers(Scheduler PRIVATE src/stdafx.h)
 set_target_properties(Scheduler PROPERTIES
     OUTPUT_NAME "_scheduler"
 )
+if(MSVC)
+    add_custom_command(
+            TARGET Scheduler POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_RUNTIME_DLLS:Scheduler>
+            $<TARGET_FILE_DIR:Scheduler>
+            COMMAND_EXPAND_LISTS
+    )
+endif()
 
 # Provide an install target iff this is the top level project only
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -163,6 +172,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     elseif(APPLE)
         set(ENV{PYTHONPATH} ${CMAKE_SOURCE_DIR}/python/:${BRANCH_ROOT_DIR}/carbon/common/stdlib:${Python_ROOT}/${CCP_VENDOR_BIN_PATH})
     endif()
+    message(STATUS "PYTHONPATH=$ENV{PYTHONPATH}")
 
     execute_process(COMMAND ${PYTHON_EXECUTABLE} discover.py
             OUTPUT_VARIABLE PYTHON_TESTS_STR
