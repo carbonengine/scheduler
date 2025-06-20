@@ -2,6 +2,13 @@
 
 #include <CcpTelemetry.h>
 
+#if _WIN32
+// WinBase.h defines a Yield() macro which clashes with the method name on scheduler
+#ifdef Yield
+#undef Yield
+#endif
+#endif
+
 #include "ScheduleManager.h"
 #include "Channel.h"
 #include "PyCallableWrapper.h"
