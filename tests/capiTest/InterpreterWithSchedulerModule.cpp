@@ -277,6 +277,10 @@ void InterpreterWithSchedulerModule::SetUp()
 	}
 	PyConfig_Clear( &config );
 
+#if _MSC_VER
+#define strcasecmp _stricmp
+#endif
+
 	const char* buildflavor = std::getenv( "BUILDFLAVOR" );
 
 	if( strcasecmp( buildflavor, "release" ) == 0 )
@@ -295,6 +299,10 @@ void InterpreterWithSchedulerModule::SetUp()
 	{
 		m_schedulerModule = PyImport_ImportModule( "_scheduler_debug" );
 	}
+
+#if _MSC_VER
+#undef strcasecmp
+#endif
 
 	auto* sys_modules = PyImport_GetModuleDict();
 	if ( PyDict_SetItemString(sys_modules, "_scheduler", m_schedulerModule) == -1 ) {
