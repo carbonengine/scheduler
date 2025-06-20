@@ -1,5 +1,7 @@
 #include "Tasklet.h"
 
+#include <CcpTelemetry.h>
+
 #include "ScheduleManager.h"
 #include "Channel.h"
 #include "PyCallableWrapper.h"
@@ -188,6 +190,7 @@ void Tasklet::Uninitialise()
 
 bool Tasklet::Insert()
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::Insert()", __FILE__, __LINE__, tracy::Color::LightGreen);
     if ( m_blocked )
     {
 		PyErr_SetString( PyExc_RuntimeError, "Failed to insert tasklet: Cannot insert blocked tasklet" );
@@ -212,6 +215,7 @@ bool Tasklet::Insert()
 
 bool Tasklet::SwitchImplementation()
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::SwitchImplementation()", __FILE__, __LINE__, tracy::Color::LightGreen);
 	// Remove the calling tasklet
 	if( !m_alive )
 	{
