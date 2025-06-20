@@ -1,7 +1,22 @@
 import unittest
 import sys
 import gc
+import os
 
+flavor = os.environ.get("BUILDFLAVOR", "release")
+
+if flavor == 'release':
+    import _scheduler as mod
+elif flavor == 'debug':
+    import _scheduler_debug as mod
+elif flavor == 'trinitydev':
+    import _scheduler_trinitydev as mod
+elif flavor == 'internal':
+    import _scheduler_internal as mod
+else:
+    raise RuntimeError("Unknown build flavor: {}".format(flavor))
+
+sys.modules["_scheduler"] = mod
 
 import scheduler
 
