@@ -37,7 +37,7 @@ set(SRC_FILES
 )
 
 set(PUBLIC_HEADER_FILES include/Scheduler.h)
-ccp_add_library(Scheduler SHARED ${SRC_FILES})
+ccp_add_library(Scheduler MODULE ${SRC_FILES})
 
 target_include_directories(Scheduler
         PUBLIC
@@ -61,6 +61,8 @@ target_precompile_headers(Scheduler PRIVATE src/stdafx.h)
 set_target_properties(Scheduler PROPERTIES
     OUTPUT_NAME "_scheduler"
     DEBUG_POSTFIX ""
+    INTERNAL_POSTFIX ""
+    TRINITYDEV_POSTFIX ""
 )
 
 # Provide an install target iff this is the top level project only
@@ -147,9 +149,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         set_tests_properties(${ALL_PYTHON_TEST} PROPERTIES ENVIRONMENT "PYTHONPATH=$ENV{PYTHONPATH};BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>")
     endif()
 
-    set (INSTALL_MODE "PERFORCE" STRING BOOL "Install this package to a perforce branch vendor folder - provided for backwards compatability")
+    option(INSTALL_TO_MONOLITH "Install this package to a perforce branch vendor folder - provided for backwards compatability" ON)
 
-    if (INSTALL_MODE STREQUAL "PERFORCE")
+    if (INSTALL_TO_MONOLITH)
         install(
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
@@ -172,17 +174,21 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 FILES_MATCHING
                 PATTERN "*.py"
         )
-    else() # "VCPKG" INSTALL_MODE, but there's no need for another option, as this will be the default
-        # Install rule to ensure that our runtime and linker files are in the vcpkg structure
+    else()
+        install(
+                TARGETS Scheduler
+                EXPORT SchedulerTargets
+                CONFIGURATIONS Release
+                LIBRARY DESTINATION lib/
+        )
+        # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
         install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
-        install(FILES python/scheduler/__init__.py DESTINATION bin/python/scheduler/)
+        install(DIRECTORY python/scheduler DESTINATION bin/python FILES_MATCHING PATTERN "*.py")
 
-        if(WIN32)
-            install(FILES $<TARGET_FILE_DIR:Scheduler>/_scheduler.pyd DESTINATION bin/)
-        elseif(APPLE)
-            install(FILES $<TARGET_FILE_NAME:Scheduler>  DESTINATION bin/)
-        endif()
-
-        install(FILES carbon-schedulerConfig.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/carbon-scheduler/)
+        install(
+                EXPORT SchedulerTargets
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/carbon-scheduler
+                FILE carbon-schedulerConfig.cmake
+        )
     endif()
 endif()

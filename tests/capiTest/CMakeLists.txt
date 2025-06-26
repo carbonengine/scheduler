@@ -19,13 +19,17 @@ set(SRC_FILES
 
 add_executable(SchedulerCapiTest ${SRC_FILES})
 
-target_include_directories(SchedulerCapiTest PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
+get_target_property(SCHEDULER_INCLUDE_DIR Scheduler INTERFACE_INCLUDE_DIRECTORIES)
 
-target_include_directories(SchedulerCapiTest PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(SchedulerCapiTest
+        PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${SCHEDULER_INCLUDE_DIR}
+)
 
 target_precompile_headers(SchedulerCapiTest PRIVATE StdAfx.h)
 
-target_link_libraries(SchedulerCapiTest PRIVATE GTest::gtest GTest::gtest_main Python3::Python Scheduler)
+target_link_libraries(SchedulerCapiTest PRIVATE GTest::gtest GTest::gtest_main Python3::Python)
 
 # Generate paths Include for each config
 # Allows for easy use inside IDE
