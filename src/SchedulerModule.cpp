@@ -4,6 +4,7 @@
 #define SCHEDULER_MODULE
 #include "Scheduler.h"
 
+#include <CcpMacros.h>
 #include <string>
 
 #include <greenlet.h>
@@ -1168,7 +1169,7 @@ static struct PyModuleDef schedulermodule = {
 	ModuleDestructor
 };
 
-PyMODINIT_FUNC PyInit__scheduler(void)
+PyMODINIT_FUNC CCP_CONCATENATE(PyInit__scheduler, CCP_BUILD_FLAVOR)(void)
 {
     PyObject *m;
 	static SchedulerCAPI api;

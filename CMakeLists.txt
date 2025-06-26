@@ -8,7 +8,7 @@ include(cmake/CcpDocsGenerator.cmake)
 
 find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 find_package(greenlet CONFIG REQUIRED)
-
+find_package(carbon-core CONFIG REQUIRED)
 
 set(SRC_FILES
     include/Scheduler.h
@@ -43,7 +43,12 @@ target_include_directories(Scheduler
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(Scheduler PRIVATE Python3::Python)
+target_link_libraries(Scheduler
+        PUBLIC
+        CcpCore
+        PRIVATE
+        Python3::Python
+)
 
 get_target_property(GREENLET_INCLUDE_DIR Greenlet INTERFACE_INCLUDE_DIRECTORIES)
 
@@ -59,10 +64,16 @@ target_precompile_headers(Scheduler PRIVATE src/stdafx.h)
 
 set_target_properties(Scheduler PROPERTIES
     OUTPUT_NAME "_scheduler"
-    DEBUG_POSTFIX ""
-    INTERNAL_POSTFIX ""
-    TRINITYDEV_POSTFIX ""
 )
+if(MSVC)
+    add_custom_command(
+            TARGET Scheduler POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_RUNTIME_DLLS:Scheduler>
+            $<TARGET_FILE_DIR:Scheduler>
+            COMMAND_EXPAND_LISTS
+    )
+endif()
 
 # Provide an install target iff this is the top level project only
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -154,7 +165,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         install(
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
-                CONFIGURATIONS Release
+                CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
                 LIBRARY DESTINATION bin/
         )
         # Install scheduler extension package
@@ -167,7 +178,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         install(
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
-                CONFIGURATIONS Release
+                CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
                 LIBRARY DESTINATION lib/
         )
         # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
