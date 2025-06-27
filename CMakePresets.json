@@ -32,6 +32,9 @@
         "lhs": "${hostSystemName}",
         "rhs": "Darwin"
       },
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES":  "arm64;x86_64"
+      },
       "hidden": true
     },
     {
