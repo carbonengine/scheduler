@@ -1,5 +1,14 @@
 #include "ScheduleManager.h"
 
+#include <CcpTelemetry.h>
+
+#if _WIN32
+// WinBase.h defines a Yield() macro which clashes with the method name on scheduler
+#ifdef Yield
+#undef Yield
+#endif
+#endif
+
 #include "Tasklet.h"
 #include "PyTasklet.h"
 #include "PyScheduleManager.h"
@@ -32,10 +41,10 @@ ScheduleManager::ScheduleManager( PyObject* pythonObject ) :
 ScheduleManager::~ScheduleManager()
 {
 	s_closingScheduleManagers[m_threadId] = this;
-	
+
     //Clear any Tasklets that may be remaining and associated with this Thread
 	ClearThreadTasklets();
-    
+
 	s_closingScheduleManagers.erase( m_threadId );
 
 	m_schedulerTasklet->Decref();
@@ -75,7 +84,7 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 {
 
     GILRAII gil; // we MUST hold the gil - this is being extra safe
-    
+
     // When a thread is destroyed it will cause ScheduleManager destruction to be called
 	// The destructor attempts to clean up Tasklets on the ScheduleManager and this requires
 	// calls to GetThreadScheduleManager. At this point when GetThreadScheduleManager is called
@@ -93,7 +102,7 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 	}
 
     PyObject* threadDict = PyThreadState_GetDict();
-    
+
     PyObject* pyScheduleManager = PyDict_GetItem( threadDict, m_scheduleManagerThreadKey );
 
     ScheduleManager* scheduleManager = nullptr;
@@ -108,7 +117,7 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
         scheduleManager->m_schedulerTasklet->SetScheduleManager( scheduleManager );
 
 		int res = PyDict_SetItem( threadDict, m_scheduleManagerThreadKey, pyScheduleManager );
-        
+
         scheduleManager->Decref();
 
         if (res == -1)
@@ -221,7 +230,7 @@ bool ScheduleManager::RemoveTasklet( Tasklet* tasklet )
 	{
 		previous->SetNext( next );
 	}
-    
+
     if(next != nullptr)
 	{
 		next->SetPrevious( previous );
@@ -244,7 +253,7 @@ bool ScheduleManager::RemoveTasklet( Tasklet* tasklet )
 
 bool ScheduleManager::Schedule( RescheduleType position, bool remove /* = false */)
 {
-    // Add Current to the end of chain of runnable tasklets    
+    // Add Current to the end of chain of runnable tasklets
 	Tasklet* currentTasklet = ScheduleManager::GetCurrentTasklet();
 
 
@@ -258,7 +267,7 @@ bool ScheduleManager::Schedule( RescheduleType position, bool remove /* = false 
 		// Set reschedule flag to inform scheduler that this tasklet must be re-inserted
 		currentTasklet->SetReschedule( position );
     }
-    
+
 
     return Yield();
 
@@ -319,7 +328,7 @@ bool ScheduleManager::Yield()
 
             return success;
         }
-        
+
 		return ScheduleManager::Run();
 	}
 	else
@@ -365,6 +374,7 @@ bool ScheduleManager::Yield()
 
 bool ScheduleManager::RunTaskletsForTime( long long timeout )
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunTaskletsForTime()", __FILE__, __LINE__, tracy::Color::LightGreen);
 	s_numberOfTaskletsCompletedLastRunWithTimeout = 0;
 
     s_numberOfTaskletsSwitchedLastRunWithTimeout = 0;
@@ -392,6 +402,7 @@ bool ScheduleManager::RunTaskletsForTime( long long timeout )
 
 bool ScheduleManager::RunNTasklets( int n )
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunNTasklets()", __FILE__, __LINE__, tracy::Color::LightGreen);
     m_taskletLimit = n;
 
     m_runType = RunType::TASKLET_LIMITED;
@@ -409,6 +420,7 @@ bool ScheduleManager::RunNTasklets( int n )
 
 bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
 {
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::Run()", __FILE__, __LINE__, tracy::Color::LightGreen);
     Tasklet* baseTasklet = nullptr;
 
     Tasklet* endTasklet = nullptr;
@@ -460,7 +472,7 @@ bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
         {
 			return false;
         }
-		
+
         // If set to true then tasklet will be decreffed at the end of the loop
         bool cleanupCurrentTasklet = false;
 
@@ -471,7 +483,7 @@ bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
         // State at switch. This is possible in a few ways but leads to code
         // obfuscation. This is not an issue when turning off Nested Tasklets
         // and with the hope that we will be moving away from Nested Tasklets
-        // and the lack of urgency from the game, it is best to keep code simple. 
+        // and the lack of urgency from the game, it is best to keep code simple.
 		if( GetCurrentTasklet()->IsMain() )
 		{
             if (m_runType == RunType::TASKLET_LIMITED)
@@ -522,7 +534,7 @@ bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
 
 			// Update current tasklet
 			ScheduleManager::SetCurrentTasklet( currentTasklet->GetParent() );
-            
+
 
 			//If this is the last tasklet then update previous_tasklet to keep it at the end of the chain
 			if( currentTasklet->Next() == nullptr )
@@ -581,7 +593,7 @@ bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
             {
 				currentTasklet->SetParent( nullptr ); // TODO handle failure
             }
-            
+
 			return false;
         }
 
@@ -607,7 +619,7 @@ bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
 				s_numberOfTaskletsCompletedLastRunWithTimeout++;
             }
         }
-		
+
 	}
 
 	return true;

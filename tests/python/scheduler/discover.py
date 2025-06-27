@@ -5,6 +5,7 @@ import unittest
 class Mock:
     channel = object
 
+sys.modules['_scheduler'] = object
 sys.modules['scheduler'] = Mock
 
 def print_suite(suite):

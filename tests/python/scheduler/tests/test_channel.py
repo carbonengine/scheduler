@@ -1,6 +1,6 @@
 import sys
-import scheduler
 from test_utils import SchedulerTestCaseBase
+import scheduler
 
 
 class TestChannels(SchedulerTestCaseBase):

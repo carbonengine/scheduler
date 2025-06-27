@@ -87,5 +87,7 @@ elseif (WIN32)
     gtest_discover_tests(
             SchedulerCapiTest capiTests
             DISCOVERY_MODE PRE_TEST
+            PROPERTIES
+                ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
     )
 endif ()
