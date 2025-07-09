@@ -44,6 +44,7 @@ std::wstring SCHEDULER_PACKAGE_PATH = L\"${CMAKE_SOURCE_DIR}/python\";
 std::wstring STDLIB_PATH = L\"${Python3_STDLIB}\";
 std::wstring GREENLET_CEXTENSION_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}\";
 std::wstring GREENLET_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}/python\";
+const char* BUILD_FLAVOUR = \"$<LOWER_CASE:$<CONFIG>>\";
 "
 )
 
@@ -87,7 +88,5 @@ elseif (WIN32)
     gtest_discover_tests(
             SchedulerCapiTest capiTests
             DISCOVERY_MODE PRE_TEST
-            PROPERTIES
-                ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
     )
 endif ()

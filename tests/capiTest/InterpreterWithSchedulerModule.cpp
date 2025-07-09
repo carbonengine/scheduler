@@ -281,21 +281,19 @@ void InterpreterWithSchedulerModule::SetUp()
 #define strcasecmp _stricmp
 #endif
 
-	const char* buildflavor = std::getenv( "BUILDFLAVOR" );
-
-	if( strcasecmp( buildflavor, "release" ) == 0 )
+	if( strcasecmp( BUILD_FLAVOUR, "release" ) == 0 )
 	{
 		m_schedulerModule = PyImport_ImportModule( "_scheduler" );
 	}
-	else if( strcasecmp( buildflavor, "internal" ) == 0 )
+	else if( strcasecmp( BUILD_FLAVOUR, "internal" ) == 0 )
 	{
 		m_schedulerModule = PyImport_ImportModule( "_scheduler_internal" );
 	}
-	else if( strcasecmp( buildflavor, "trinitydev" ) == 0 )
+	else if( strcasecmp( BUILD_FLAVOUR, "trinitydev" ) == 0 )
 	{
 		m_schedulerModule = PyImport_ImportModule( "_scheduler_trinitydev" );
 	}
-	else if( strcasecmp( buildflavor, "debug" ) == 0 )
+	else if( strcasecmp( BUILD_FLAVOUR, "debug" ) == 0 )
 	{
 		m_schedulerModule = PyImport_ImportModule( "_scheduler_debug" );
 	}
