@@ -72,6 +72,8 @@ if (APPLE)
     gtest_discover_tests(
             SchedulerCapiTest capiTests
             DISCOVERY_MODE PRE_TEST
+            PROPERTIES
+                ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
     )
 
 elseif (WIN32)
