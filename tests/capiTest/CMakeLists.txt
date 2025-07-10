@@ -60,23 +60,7 @@ add_custom_command (
 add_custom_target(GeneratePackagePathsHeader DEPENDS "PackagePaths.h")
 add_dependencies(SchedulerCapiTest GeneratePackagePathsHeader)
 
-
-if (APPLE)
-    add_custom_command(
-            TARGET SchedulerCapiTest POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            $<TARGET_FILE:Python3::Python>
-            $<TARGET_FILE_DIR:SchedulerCapiTest>
-    )
-
-    gtest_discover_tests(
-            SchedulerCapiTest capiTests
-            DISCOVERY_MODE PRE_TEST
-            PROPERTIES
-                ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
-    )
-
-elseif (WIN32)
+if (WIN32)
     add_custom_command(
             TARGET SchedulerCapiTest POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
@@ -85,11 +69,10 @@ elseif (WIN32)
             COMMAND_EXPAND_LISTS
             VERBATIM
     )
-
-    gtest_discover_tests(
-            SchedulerCapiTest capiTests
-            DISCOVERY_MODE PRE_TEST
-            PROPERTIES
-                ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
-    )
 endif ()
+gtest_discover_tests(
+        SchedulerCapiTest capiTests
+        DISCOVERY_MODE PRE_TEST
+        PROPERTIES
+        ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
+)
