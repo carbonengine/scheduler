@@ -8,10 +8,10 @@ import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 object Project : Project({
 
-    description = "Build / Publish pipeline for https://github.com/ccpgames/carbon-io"
+    description = "Build / Publish pipeline for https://github.com/carbonengine/scheduler"
 
     params {
-        param("carbon_ref", "refs/heads/feature/kotlin")
+        param("carbon_ref", "refs/heads/main")
         param("carbon-pipeline-tools-ref", "refs/heads/main")
     }
     

@@ -22,7 +22,7 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.provideAwsCredentials
 val Debug = CarbonBuildMacOS("Debug MacOS", "Debug", "nmc-universal-osx-debug")
 val Internal = CarbonBuildMacOS("Internal MacOS", "Internal", "nmc-universal-osx-internal")
 val TrinityDev = CarbonBuildMacOS("TrinityDev MacOS", "TrinityDev", "nmc-universal-osx-trinitydev")
-val Release = CarbonBuildMacOS("Release MacOS", "Release", "nmc-universal-osx-release")
+val Release = CarbonBuildMacOS("Release MacOS", "Release", "nmc-universal-osx-releasfe")
 
 object Project : Project({
     id("MacOS")
@@ -47,7 +47,7 @@ class CarbonBuildMacOS(buildName: String, configType: String, preset: String) : 
         param("env.CMAKE_CONFIG_TYPE", configType)
         param("env.CMAKE_GENERATOR", "Ninja Multi-Config")
         param("teamcity.vcsTrigger.runBuildInNewEmptyBranch", "true")
-        param("carbon_ref", "refs/heads/feature/kotlin")
+        param("carbon_ref", "refs/heads/main")
         param("github_checkout_folder", "github")
         param("env.CTEST_JUNIT_OUTPUT_FILE", "ctest_results.xml")
         select("env.VISUAL_STUDIO_PLATFORM_TOOLSET", "v141", label = "Visual Studio Platform Toolset", description = "Specify the toolset for the build. e.g. v141 or v143.",
