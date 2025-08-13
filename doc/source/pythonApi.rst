@@ -134,4 +134,4 @@ Methods
 
 .. autofunction:: scheduler.get_all_time_tasklet_count
 
-.. autofunction:: scheduler.get_alive_tasklet_count
+.. autofunction:: scheduler.get_active_tasklet_count

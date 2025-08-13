@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.31)
 
 project(SchedulerCapiTest)
 
-find_package(Python REQUIRED NO_CMAKE_PATH)
-find_package(GTest REQUIRED NO_CMAKE_PATH)
+find_package(Python3 COMPONENTS Development REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 include(GoogleTest)
 
@@ -19,13 +19,17 @@ set(SRC_FILES
 
 add_executable(SchedulerCapiTest ${SRC_FILES})
 
-target_include_directories(SchedulerCapiTest PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
+get_target_property(SCHEDULER_INCLUDE_DIR Scheduler INTERFACE_INCLUDE_DIRECTORIES)
 
-target_include_directories(SchedulerCapiTest PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(SchedulerCapiTest
+        PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${SCHEDULER_INCLUDE_DIR}
+)
 
 target_precompile_headers(SchedulerCapiTest PRIVATE StdAfx.h)
 
-target_link_libraries(SchedulerCapiTest PRIVATE GTest::GTest GTest::Main Python Scheduler)
+target_link_libraries(SchedulerCapiTest PRIVATE GTest::gtest GTest::gtest_main Python3::Python)
 
 # Generate paths Include for each config
 # Allows for easy use inside IDE
@@ -37,19 +41,13 @@ file (GENERATE
 #include <string>
 std::wstring SCHEDULER_CEXTENSION_MODULE_PATH = L\"$<TARGET_FILE_DIR:Scheduler>\";
 std::wstring SCHEDULER_PACKAGE_PATH = L\"${CMAKE_SOURCE_DIR}/python\";
-std::wstring STDLIB_PATH = L\"${BRANCH_ROOT_DIR}/carbon/common/stdlib/\";
-std::wstring GREENLET_CEXTENSION_MODULE_PATH = L\"${Greenlet_ROOT}/${CCP_VENDOR_BIN_PATH}\";
-std::wstring GREENLET_MODULE_PATH = L\"${Greenlet_ROOT}/python\";
+std::wstring STDLIB_PATH = L\"${Python3_STDLIB}\";
+std::wstring GREENLET_CEXTENSION_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}\";
+std::wstring GREENLET_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}/python\";
 "
 )
 
-# Copy the python dll to target build directory
-if(WIN32)
-    set(PythonLibName "python312.dll")
-elseif(APPLE)
-    set(PythonLibName "libpython3.12.dylib")
-endif()
-
+cmake_policy(SET CMP0175 OLD) # Allows us to use OUTPUT with PRE_BUILD in add_custom_command
 add_custom_command (
         COMMAND ${CMAKE_COMMAND} "-E" "copy_if_different" "PackagePaths_$<CONFIG>.h" "PackagePaths.h"
         VERBATIM
@@ -62,24 +60,19 @@ add_custom_command (
 add_custom_target(GeneratePackagePathsHeader DEPENDS "PackagePaths.h")
 add_dependencies(SchedulerCapiTest GeneratePackagePathsHeader)
 
-add_custom_command(
-  TARGET SchedulerCapiTest POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy
-    ${Python_ROOT}/${CCP_VENDOR_BIN_PATH}/${PythonLibName}
-    $<TARGET_FILE_DIR:SchedulerCapiTest>
-)
-if(MSVC)
+if (WIN32)
     add_custom_command(
-        TARGET SchedulerCapiTest POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_RUNTIME_DLLS:SchedulerCapiTest>
-        $<TARGET_FILE_DIR:SchedulerCapiTest>
-      COMMAND_EXPAND_LISTS
+            TARGET SchedulerCapiTest POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_RUNTIME_DLLS:SchedulerCapiTest>
+            $<TARGET_FILE_DIR:SchedulerCapiTest>
+            COMMAND_EXPAND_LISTS
+            VERBATIM
     )
-endif()
-
-gtest_discover_tests(SchedulerCapiTest capiTests
-    DISCOVERY_MODE PRE_TEST
-    PROPERTIES
+endif ()
+gtest_discover_tests(
+        SchedulerCapiTest capiTests
+        DISCOVERY_MODE PRE_TEST
+        PROPERTIES
         ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
 )

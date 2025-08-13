@@ -116,7 +116,7 @@ For further information on kill refer to :doc:`killingTasklets`.
    >>>Kill called
 
 Preventing uncaught exceptions from being raised on parent tasklets using :py:attr:`scheduler.tasklet.dont_raise`
------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------
 
 Usually, (excluding TaskletExit exceptions) an uncaught exception on a child tasklet will result in that exception being raised on the parent tasklet. setting :py:attr:`scheduler.tasklet.dont_raise` to `True` before binding a tasklet will prevent this from happening.
 

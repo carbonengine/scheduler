@@ -24,3 +24,8 @@ __pycache__/
 *$py.class
 *.pyc
 *.pyd
+
+# CMake
+CMakeUserPresets.json
+cmake-build-*
+.cmake-build-*
