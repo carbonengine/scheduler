@@ -88,36 +88,39 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python:$<TARGET_FILE_DIR:Scheduler>:${GREENLET_IMPORTED_LOCATION_DIR}/python:${GREENLET_IMPORTED_LOCATION_DIR}")
     endif()
 
-    # Determine if/when to generate/build documentation. The rules are as follows:
-    # - If running locally - Build documentation is OFF by default
-    # - If running on a build agent (TeamCity) - Build documentation is ON by default
-    # - If -DBUILD_DOCUMENTATION=ON/OFF flag is explicitly set, use it.
-    set(BUILD_DOCUMENTATION_DEFAULT_FLAG OFF)
-    if (DEFINED ENV{TEAMCITY_VERSION})
-        set(BUILD_DOCUMENTATION_DEFAULT_FLAG ON)
-    endif()
-    message(STATUS "Document generation settings: default=${BUILD_DOCUMENTATION_DEFAULT_FLAG}, option BUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}")
-    option(BUILD_DOCUMENTATION "Build Documentation" ${BUILD_DOCUMENTATION_DEFAULT_FLAG})
+    # Documentation generation is constrained to release builds
+    if(${CMAKE_BUILD_TYPE} MATCHES Release)
+        # Determine if/when to generate/build documentation. The rules are as follows:
+        # - If running locally - Build documentation is OFF by default
+        # - If running on a build agent (TeamCity) - Build documentation is ON by default
+        # - If -DBUILD_DOCUMENTATION=ON/OFF flag is explicitly set, use it.
+        set(BUILD_DOCUMENTATION_DEFAULT_FLAG OFF)
+        if (DEFINED ENV{TEAMCITY_VERSION})
+            set(BUILD_DOCUMENTATION_DEFAULT_FLAG ON)
+        endif()
+        message(STATUS "Document generation settings: default=${BUILD_DOCUMENTATION_DEFAULT_FLAG}, option BUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}")
+        option(BUILD_DOCUMENTATION "Build Documentation" ${BUILD_DOCUMENTATION_DEFAULT_FLAG})
 
-    if(BUILD_DOCUMENTATION)
-        # Run sphinx
-        set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/doc/source)
-        set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/doc/build)
+        if(BUILD_DOCUMENTATION)
+            # Run sphinx
+            set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/doc/source)
+            set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/doc/build)
 
-        create_carbon_docs_sphinx_target(
-                PYTHON_EXE ${Python3_EXECUTABLE}
-                VENV_NAME docs_generation_venv
-                PYTHONPATH_ENV $ENV{PYTHONPATH}
-                SPHINX_SOURCE ${SPHINX_SOURCE}
-                SPHINX_BUILD ${SPHINX_BUILD}
-                DOXYGEN_SRC_FILES ${SRC_FILES}
-                SPHINX_TARGET_NAME Sphinx
-                DOXYGEN_TARGET_NAME Doxygen
-                INSTALL_DESTINATION documentation
-        )
+            create_carbon_docs_sphinx_target(
+                    PYTHON_EXE ${Python3_EXECUTABLE}
+                    VENV_NAME docs_generation_venv
+                    PYTHONPATH_ENV $ENV{PYTHONPATH}
+                    SPHINX_SOURCE ${SPHINX_SOURCE}
+                    SPHINX_BUILD ${SPHINX_BUILD}
+                    DOXYGEN_SRC_FILES ${SRC_FILES}
+                    SPHINX_TARGET_NAME Sphinx
+                    DOXYGEN_TARGET_NAME Doxygen
+                    INSTALL_DESTINATION documentation
+            )
 
-        # Ensure that Scheduler is built before Spinx target
-        add_dependencies(Sphinx Scheduler)
+            # Ensure that Scheduler is built before Spinx target
+            add_dependencies(Sphinx Scheduler)
+        endif()
     endif()
 
     option(BUILD_TESTING "Build and run tests" ON)
