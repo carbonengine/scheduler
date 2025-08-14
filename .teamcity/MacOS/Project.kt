@@ -144,7 +144,7 @@ class CarbonBuildMacOS(buildName: String, configType: String, preset: String) : 
                 authType = token {
                     token = "%GITHUB_CARBON_PAT%"
                 }
-                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER
+                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER_OR_COLLABORATOR
             }
         }
         commitStatusPublisher {
