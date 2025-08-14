@@ -22,7 +22,7 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.provideAwsCredentials
 val Debug = CarbonBuildMacOS("Debug MacOS", "Debug", "nmc-universal-osx-debug")
 val Internal = CarbonBuildMacOS("Internal MacOS", "Internal", "nmc-universal-osx-internal")
 val TrinityDev = CarbonBuildMacOS("TrinityDev MacOS", "TrinityDev", "nmc-universal-osx-trinitydev")
-val Release = CarbonBuildMacOS("Release MacOS", "Release", "nmc-universal-osx-releasfe")
+val Release = CarbonBuildMacOS("Release MacOS", "Release", "nmc-universal-osx-release")
 
 object Project : Project({
     id("MacOS")
