@@ -78,9 +78,9 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
         }
         exec {
             name = "(Windows) Get Git Tag/Hash"
-            workingDir = "carbon_pipeline_tools"
+            workingDir = "%teamcity.build.checkoutDir%/%github_checkout_folder%"
             path = "python"
-            arguments = "carbon/GetGitTagAndOrHash.py"
+            arguments = "%teamcity.build.checkoutDir%/carbon_pipeline_tools/carbon/GetGitTagAndOrHash.py"
         }
         script {
             name = "(Windows) Bootstrap Build environment"

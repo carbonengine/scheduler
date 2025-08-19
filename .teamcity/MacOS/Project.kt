@@ -79,9 +79,9 @@ class CarbonBuildMacOS(buildName: String, configType: String, preset: String) : 
         }
         exec {
             name = "(macOS) Get Git Tag/Hash"
-            workingDir = "carbon_pipeline_tools"
+            workingDir = "%teamcity.build.checkoutDir%/%github_checkout_folder%"
             path = "python3"
-            arguments = "carbon/GetGitTagAndOrHash.py"
+            arguments = "%teamcity.build.checkoutDir%/carbon_pipeline_tools/carbon/GetGitTagAndOrHash.py"
         }
         exec {
             name = "(macOS) Remove build artifacts folder"
