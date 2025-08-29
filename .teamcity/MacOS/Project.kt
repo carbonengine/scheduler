@@ -47,7 +47,6 @@ class CarbonBuildMacOS(buildName: String, configType: String, preset: String) : 
         param("env.CMAKE_CONFIG_TYPE", configType)
         param("env.CMAKE_GENERATOR", "Ninja Multi-Config")
         param("teamcity.vcsTrigger.runBuildInNewEmptyBranch", "true")
-        param("carbon_ref", "refs/heads/main")
         param("github_checkout_folder", "github")
         param("env.CTEST_JUNIT_OUTPUT_FILE", "ctest_results.xml")
         select("env.VISUAL_STUDIO_PLATFORM_TOOLSET", "v141", label = "Visual Studio Platform Toolset", description = "Specify the toolset for the build. e.g. v141 or v143.",

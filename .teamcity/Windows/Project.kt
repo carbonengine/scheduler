@@ -42,7 +42,6 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
     artifactRules = "%env.CMAKE_INSTALL_PREFIX%"
 
     params {
-        param("carbon_ref", "refs/heads/main")
         param("env.GIT_TAG_HASH_OVERRIDE", "")
         param("github_checkout_folder", "github")
         param("env.CTEST_JUNIT_OUTPUT_FILE", "ctest_results.xml")
