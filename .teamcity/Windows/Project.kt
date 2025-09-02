@@ -42,7 +42,6 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
     artifactRules = "%env.CMAKE_INSTALL_PREFIX%"
 
     params {
-        param("carbon_ref", "refs/heads/main")
         param("env.GIT_TAG_HASH_OVERRIDE", "")
         param("github_checkout_folder", "github")
         param("env.CTEST_JUNIT_OUTPUT_FILE", "ctest_results.xml")
@@ -61,6 +60,8 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
         param("env.CMAKE_PRESET", preset)
         param("env.VCPKG_BINARY_SOURCES", "clear;x-aws,s3://vcpkg-binary-cache-static/cache/,readwrite")
         param("env.X_VCPKG_REGISTRIES_CACHE", "%teamcity.build.checkoutDir%/%github_checkout_folder%/regcache")
+        param("env.CMAKE_BUILD_PARALLEL_LEVEL", "8")
+        param("env.CTEST_PARALLEL_LEVEL", "8")
     }
 
     vcs {
@@ -103,13 +104,13 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
         exec {
             name = "Build"
             path = "cmake"
-            arguments = "--build %env.CMAKE_BUILD_FOLDER% --config %env.CMAKE_CONFIG_TYPE% --target %env.CMAKE_BUILD_TARGETS% --parallel 8"
+            arguments = "--build %env.CMAKE_BUILD_FOLDER% --config %env.CMAKE_CONFIG_TYPE% --target %env.CMAKE_BUILD_TARGETS%"
         }
         exec {
             name = "Run Tests"
             workingDir = "%env.CMAKE_BUILD_FOLDER%"
             path = "ctest"
-            arguments = "-C %env.CMAKE_CONFIG_TYPE% -V --output-on-failure --output-junit %env.CTEST_JUNIT_OUTPUT_FILE% -j 8"
+            arguments = "-C %env.CMAKE_CONFIG_TYPE% -V --output-on-failure --output-junit %env.CTEST_JUNIT_OUTPUT_FILE%"
         }
         exec {
             name = "Package artifact"
