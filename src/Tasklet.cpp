@@ -129,6 +129,7 @@ PyObject* Tasklet::KwArguments() const
 void Tasklet::SetToCurrentGreenlet()
 {
 	// Import Greenlet C-API
+	PySys_WriteStdout( "IMPORTING GREENLET CAPSULE\n" );
 	PyGreenlet_Import();
 
 	if( _PyGreenlet_API == NULL )
@@ -138,8 +139,9 @@ void Tasklet::SetToCurrentGreenlet()
 	}
 
 	Py_XDECREF( m_greenlet );
-
+	PySys_WriteStdout( "SETTING m_greenlet to PyGreenlet_GetCurrent()\n" );
     m_greenlet = PyGreenlet_GetCurrent();
+	PySys_WriteStdout( "SUCCESS SETTING m_greenlet to PyGreenlet_GetCurrent()\n" );
 }
 
 bool Tasklet::Remove()

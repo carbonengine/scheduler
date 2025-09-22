@@ -87,6 +87,10 @@ void ScheduleManager::CreateSchedulerTasklet()
 	PySys_WriteStdout( "GETTING IMPLELEMTATION\n" );
 	m_schedulerTasklet = reinterpret_cast<PyTaskletObject*>( pySchedulerTasklet )->m_implementation;
 
+	if (!m_schedulerTasklet) {
+		PySys_WriteStdout( "WE ARE ABOUT TO CRASH m_schedulerTasklet IS NULL\n" );
+	}
+
 
 	PySys_WriteStdout( "SETTING TO CURRENT GREENLET\n" );
 	m_schedulerTasklet->SetToCurrentGreenlet();
