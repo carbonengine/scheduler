@@ -29,6 +29,7 @@ ScheduleManager::ScheduleManager( PyObject* pythonObject ) :
 	m_runType(RunType::STANDARD),
 	m_startTime( std::chrono::steady_clock::now() )
 {
+	PySys_WriteStdout( "CREATING SCHEDULER TASKLET\n" );
     // Create scheduler tasklet
 	CreateSchedulerTasklet();
 
@@ -54,7 +55,16 @@ ScheduleManager::~ScheduleManager()
 
 void ScheduleManager::CreateSchedulerTasklet()
 {
+	PySys_WriteStdout( "CREATING A NEW TUPLE\n" );
 	PyObject* taskletArgs = PyTuple_New( 2 );
+
+	if (!taskletArgs) {
+		PySys_WriteStdout( "ABOUT TO CRASH, FAULED TO CREATE TUPLE\n" );
+	}
+	else {
+		PySys_WriteStdout( "TUPLE CREATED SUCESSFULLY\n" );
+	}
+
 
 	Py_IncRef( Py_None );
 
@@ -62,15 +72,26 @@ void ScheduleManager::CreateSchedulerTasklet()
 
 	PyTuple_SetItem( taskletArgs, 1, Py_True );
 
+	PySys_WriteStdout( "CREATING MAIN TASKLET\n" );
 	PyObject* pySchedulerTasklet = PyObject_CallObject( reinterpret_cast<PyObject*>( s_taskletType ), taskletArgs );
+
+	if (!pySchedulerTasklet) {
+		PySys_WriteStdout( "ABOUT TO CRASH, FAILED TO CREATE MAIN TASKLET\n" );
+	}
+	else {
+		PySys_WriteStdout( "CREATED MAIN TASKLET\n" );
+	}
 
 	Py_DecRef( taskletArgs );
 
+	PySys_WriteStdout( "GETTING IMPLELEMTATION\n" );
 	m_schedulerTasklet = reinterpret_cast<PyTaskletObject*>( pySchedulerTasklet )->m_implementation;
 
 
+	PySys_WriteStdout( "SETTING TO CURRENT GREENLET\n" );
 	m_schedulerTasklet->SetToCurrentGreenlet();
 
+	PySys_WriteStdout( "SETTING SCHEDULED TO TRUE\n" );
 	m_schedulerTasklet->SetScheduled( true );
 }
 
@@ -128,9 +149,15 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 			return nullptr;
 		}
 
+		PySys_WriteStdout( "CREATED NEW SCHEDULE MANAGER SUCCESSFULLY\n" );
+
 		scheduleManager = reinterpret_cast<PyScheduleManagerObject*>( pyScheduleManager )->m_implementation;
 
+		PySys_WriteStdout( "GOT THE IMPLEMENTATION\n" );
+
         scheduleManager->m_schedulerTasklet->SetScheduleManager( scheduleManager );
+
+		PySys_WriteStdout( "SET THE SCHEDULE MANAGER\n" );
 
 		int res = PyDict_SetItem( threadDict, m_scheduleManagerThreadKey, pyScheduleManager );
 

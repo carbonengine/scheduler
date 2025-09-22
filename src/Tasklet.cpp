@@ -61,9 +61,12 @@ Tasklet::Tasklet( PyObject* pythonObject, PyObject* taskletExitException, bool i
 	s_totalAllTimeTaskletCount++;
 	s_totalActiveTasklets++;
 
+	PySys_WriteStdout( "CONSTRUCTING NEW TASKLET\n" );
+
     // If tasklet is not a scheduler tasklet then register the tasklet with the thread's ScheduleManager
 	if( !m_isMain )
 	{
+		PySys_WriteStdout( "WE ARE NOT MAIN . . .\n" );
 		SetScheduleManager( ScheduleManager::GetThreadScheduleManager() );
 	}
 }
