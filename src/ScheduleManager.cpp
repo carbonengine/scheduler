@@ -103,6 +103,10 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 
     PyObject* threadDict = PyThreadState_GetDict();
 
+	if (!threadDict) {
+		return nullptr;
+	}
+
     PyObject* pyScheduleManager = PyDict_GetItem( threadDict, m_scheduleManagerThreadKey );
 
     ScheduleManager* scheduleManager = nullptr;
