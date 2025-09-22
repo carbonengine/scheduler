@@ -116,6 +116,13 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 		// Create new scheduler for the thread
 		pyScheduleManager = PyObject_CallObject( reinterpret_cast<PyObject*>( s_scheduleManagerType ), nullptr );
 
+		if (!pyScheduleManager) {
+			PyObject* raisedException = PyErr_GetRaisedException();
+			Py_DECREF(raisedException);
+
+			return nullptr;
+		}
+
 		scheduleManager = reinterpret_cast<PyScheduleManagerObject*>( pyScheduleManager )->m_implementation;
 
         scheduleManager->m_schedulerTasklet->SetScheduleManager( scheduleManager );
