@@ -130,18 +130,22 @@ void Tasklet::SetToCurrentGreenlet()
 {
 	// Import Greenlet C-API
 	PySys_WriteStdout( "IMPORTING GREENLET CAPSULE\n" );
+	fflush(stdout);
 	PyGreenlet_Import();
 
 	if( _PyGreenlet_API == NULL )
 	{
 		PySys_WriteStdout( "Failed to import greenlet capsule\n" );
+		fflush(stdout);
 		PyErr_Print();
 	}
 
 	Py_XDECREF( m_greenlet );
 	PySys_WriteStdout( "SETTING m_greenlet to PyGreenlet_GetCurrent()\n" );
+	fflush(stdout);
     m_greenlet = PyGreenlet_GetCurrent();
 	PySys_WriteStdout( "SUCCESS SETTING m_greenlet to PyGreenlet_GetCurrent()\n" );
+	fflush(stdout);
 }
 
 bool Tasklet::Remove()

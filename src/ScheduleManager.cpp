@@ -30,6 +30,7 @@ ScheduleManager::ScheduleManager( PyObject* pythonObject ) :
 	m_startTime( std::chrono::steady_clock::now() )
 {
 	PySys_WriteStdout( "CREATING SCHEDULER TASKLET\n" );
+	fflush(stdout);
     // Create scheduler tasklet
 	CreateSchedulerTasklet();
 
@@ -56,13 +57,16 @@ ScheduleManager::~ScheduleManager()
 void ScheduleManager::CreateSchedulerTasklet()
 {
 	PySys_WriteStdout( "CREATING A NEW TUPLE\n" );
+	fflush(stdout);
 	PyObject* taskletArgs = PyTuple_New( 2 );
 
 	if (!taskletArgs) {
 		PySys_WriteStdout( "ABOUT TO CRASH, FAULED TO CREATE TUPLE\n" );
+		fflush(stdout);
 	}
 	else {
 		PySys_WriteStdout( "TUPLE CREATED SUCESSFULLY\n" );
+		fflush(stdout);
 	}
 
 
@@ -73,29 +77,36 @@ void ScheduleManager::CreateSchedulerTasklet()
 	PyTuple_SetItem( taskletArgs, 1, Py_True );
 
 	PySys_WriteStdout( "CREATING MAIN TASKLET\n" );
+	fflush(stdout);
 	PyObject* pySchedulerTasklet = PyObject_CallObject( reinterpret_cast<PyObject*>( s_taskletType ), taskletArgs );
 
 	if (!pySchedulerTasklet) {
 		PySys_WriteStdout( "ABOUT TO CRASH, FAILED TO CREATE MAIN TASKLET\n" );
+		fflush(stdout);
 	}
 	else {
 		PySys_WriteStdout( "CREATED MAIN TASKLET\n" );
+		fflush(stdout);
 	}
 
 	Py_DecRef( taskletArgs );
 
 	PySys_WriteStdout( "GETTING IMPLELEMTATION\n" );
+	fflush(stdout);
 	m_schedulerTasklet = reinterpret_cast<PyTaskletObject*>( pySchedulerTasklet )->m_implementation;
 
 	if (!m_schedulerTasklet) {
 		PySys_WriteStdout( "WE ARE ABOUT TO CRASH m_schedulerTasklet IS NULL\n" );
+		fflush(stdout);
 	}
 
 
 	PySys_WriteStdout( "SETTING TO CURRENT GREENLET\n" );
+	fflush(stdout);
 	m_schedulerTasklet->SetToCurrentGreenlet();
 
 	PySys_WriteStdout( "SETTING SCHEDULED TO TRUE\n" );
+	fflush(stdout);
 	m_schedulerTasklet->SetScheduled( true );
 }
 
@@ -108,8 +119,10 @@ long ScheduleManager::NumberOfActiveScheduleManagers()
 ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 {
 	PySys_WriteStdout( "ACCQUIRING THE GIL\n" );
+	fflush(stdout);
     GILRAII gil; // we MUST hold the gil - this is being extra safe
 	PySys_WriteStdout( "GIL ACCQUIRED\n" );
+	fflush(stdout);
     // When a thread is destroyed it will cause ScheduleManager destruction to be called
 	// The destructor attempts to clean up Tasklets on the ScheduleManager and this requires
 	// calls to GetThreadScheduleManager. At this point when GetThreadScheduleManager is called
@@ -121,10 +134,12 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 	// at the end of which the scheduleManager will be removed from the closingScheduleManagers list.
 	long threadId = PyThread_get_thread_ident();
 	PySys_WriteStdout( "CALLED PyThread_get_thread_ident\n" );
+	fflush(stdout);
 	auto res = s_closingScheduleManagers.find( threadId );
 	if( res != s_closingScheduleManagers.end() )
 	{
 		PySys_WriteStdout( "res != s_closingScheduleManagers.end() RETURNING EARLY\n" );
+		fflush(stdout);
 		return res->second;
 	}
 
@@ -132,6 +147,7 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 
 	if (!threadDict) {
 		PySys_WriteStdout( "theadDict is NULL, RETURNING EARLY\n" );
+		fflush(stdout);
 		return nullptr;
 	}
 
@@ -142,26 +158,32 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
     if( !pyScheduleManager )
 	{
 		PySys_WriteStdout( "!pyScheduleManager CREATING NEW SCHEDULE MANAGER\n" );
+		fflush(stdout);
 		// Create new scheduler for the thread
 		pyScheduleManager = PyObject_CallObject( reinterpret_cast<PyObject*>( s_scheduleManagerType ), nullptr );
 
 		if (!pyScheduleManager) {
 			PySys_WriteStdout( "!pyScheduleManager COULD NOT CREATE SCHEDULE MANAGER, CLEARNING EXCEPTION\n" );
+			fflush(stdout);
 			PyObject* raisedException = PyErr_GetRaisedException();
 			Py_DECREF(raisedException);
 			PySys_WriteStdout( "EXCEPTION CLEARED\n" );
+			fflush(stdout);
 			return nullptr;
 		}
 
 		PySys_WriteStdout( "CREATED NEW SCHEDULE MANAGER SUCCESSFULLY\n" );
+		fflush(stdout);
 
 		scheduleManager = reinterpret_cast<PyScheduleManagerObject*>( pyScheduleManager )->m_implementation;
 
 		PySys_WriteStdout( "GOT THE IMPLEMENTATION\n" );
+		fflush(stdout);
 
         scheduleManager->m_schedulerTasklet->SetScheduleManager( scheduleManager );
 
 		PySys_WriteStdout( "SET THE SCHEDULE MANAGER\n" );
+		fflush(stdout);
 
 		int res = PyDict_SetItem( threadDict, m_scheduleManagerThreadKey, pyScheduleManager );
 
@@ -178,6 +200,7 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 	else
 	{
 		PySys_WriteStdout( "pyCScheduler WAS FOUND, RETURNING IT\n" );
+		fflush(stdout);
 		scheduleManager = reinterpret_cast<PyScheduleManagerObject*>( pyScheduleManager )->m_implementation;
     }
 

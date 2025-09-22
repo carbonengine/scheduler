@@ -40,7 +40,7 @@ static PyObject*
 }
 
 static int
-	TaskletInit( PyTypeObject* self, PyObject* args, PyObject* kwds )
+	TaskletInit( PyObject* self, PyObject* args, PyObject* kwds )
 {
 	PyTaskletObject* taskletObject = reinterpret_cast<PyTaskletObject*>( self );
 
