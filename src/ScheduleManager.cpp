@@ -82,9 +82,9 @@ long ScheduleManager::NumberOfActiveScheduleManagers()
 // Returns a new schedule manager reference
 ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 {
-
+	PySys_WriteStdout( "ACCQUIRING THE GIL\n" );
     GILRAII gil; // we MUST hold the gil - this is being extra safe
-
+	PySys_WriteStdout( "GIL ACCQUIRED\n" );
     // When a thread is destroyed it will cause ScheduleManager destruction to be called
 	// The destructor attempts to clean up Tasklets on the ScheduleManager and this requires
 	// calls to GetThreadScheduleManager. At this point when GetThreadScheduleManager is called
@@ -95,15 +95,18 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 	// the thread will not have fully finished until the scheduleManager destructor is completed
 	// at the end of which the scheduleManager will be removed from the closingScheduleManagers list.
 	long threadId = PyThread_get_thread_ident();
+	PySys_WriteStdout( "CALLED PyThread_get_thread_ident\n" );
 	auto res = s_closingScheduleManagers.find( threadId );
 	if( res != s_closingScheduleManagers.end() )
 	{
+		PySys_WriteStdout( "res != s_closingScheduleManagers.end() RETURNING EARLY\n" );
 		return res->second;
 	}
 
     PyObject* threadDict = PyThreadState_GetDict();
 
 	if (!threadDict) {
+		PySys_WriteStdout( "theadDict is NULL, RETURNING EARLY\n" );
 		return nullptr;
 	}
 
@@ -113,13 +116,15 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 
     if( !pyScheduleManager )
 	{
+		PySys_WriteStdout( "!pyScheduleManager CREATING NEW SCHEDULE MANAGER\n" );
 		// Create new scheduler for the thread
 		pyScheduleManager = PyObject_CallObject( reinterpret_cast<PyObject*>( s_scheduleManagerType ), nullptr );
 
 		if (!pyScheduleManager) {
+			PySys_WriteStdout( "!pyScheduleManager COULD NOT CREATE SCHEDULE MANAGER, CLEARNING EXCEPTION\n" );
 			PyObject* raisedException = PyErr_GetRaisedException();
 			Py_DECREF(raisedException);
-
+			PySys_WriteStdout( "EXCEPTION CLEARED\n" );
 			return nullptr;
 		}
 
@@ -141,6 +146,7 @@ ScheduleManager* ScheduleManager::GetThreadScheduleManager()
 	}
 	else
 	{
+		PySys_WriteStdout( "pyCScheduler WAS FOUND, RETURNING IT\n" );
 		scheduleManager = reinterpret_cast<PyScheduleManagerObject*>( pyScheduleManager )->m_implementation;
     }
 

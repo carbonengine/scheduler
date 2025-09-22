@@ -361,16 +361,19 @@ static PyObject*
 static PyObject*
 	SchedulerGetScheduleManager( PyObject* self, PyObject* Py_UNUSED( ignored ) )
 {
+	PySys_WriteStdout( "CALLING: ScheduleManager::GetThreadScheduleManager\n" );
 	ScheduleManager* scheduleManager = ScheduleManager::GetThreadScheduleManager();
 
     if (scheduleManager)
     {
+		PySys_WriteStdout( "WE GOT A SCHEDULE MANAGER, INCREFING IT AND RETURNING TO PYTHON LAND\n" );
 		scheduleManager->Incref();
 
         return scheduleManager->PythonObject();
     }
     else
     {
+		PySys_WriteStdout( "RETURNING Py_None TO PYTHON LAND\n" );
 		Py_IncRef( Py_None );
 
 		return Py_None;
