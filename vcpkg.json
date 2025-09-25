@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "python3-prebuilt",
-      "version>=": "3.12.3#2"
+      "version>=": "3.12.3#3"
     },
     {
       "name": "greenlet",
