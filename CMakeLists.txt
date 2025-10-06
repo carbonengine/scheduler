@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 3.30.1)
 project(Scheduler)
 
 include(cmake/CcpGlobalSettings.cmake)
