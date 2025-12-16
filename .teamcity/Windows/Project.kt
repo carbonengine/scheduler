@@ -1,5 +1,6 @@
 package Windows
 
+import jetbrains.buildServer.configs.kotlin.DslContext
 import jetbrains.buildServer.configs.kotlin.Project
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
@@ -19,10 +20,10 @@ import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.buildFeatures.provideAwsCredentials
 
-val Debug = CarbonBuildWindows("Debug Windows", "Debug", "nmc-x64-windows-debug")
-val Internal = CarbonBuildWindows("Internal Windows", "Internal", "nmc-x64-windows-internal")
-val TrinityDev = CarbonBuildWindows("TrinityDev Windows", "TrinityDev", "nmc-x64-windows-trinitydev")
-val Release = CarbonBuildWindows("Release Windows", "Release", "nmc-x64-windows-release")
+val Debug = CarbonBuildWindows("Debug Windows", "Debug", "x64-windows-debug")
+val Internal = CarbonBuildWindows("Internal Windows", "Internal", "x64-windows-internal")
+val TrinityDev = CarbonBuildWindows("TrinityDev Windows", "TrinityDev", "x64-windows-trinitydev")
+val Release = CarbonBuildWindows("Release Windows", "Release", "x64-windows-release")
 
 object Project : Project({
     id("Windows")
@@ -48,7 +49,6 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
         select("env.VISUAL_STUDIO_PLATFORM_TOOLSET", "v141", label = "Visual Studio Platform Toolset", description = "Specify the toolset for the build. e.g. v141 or v143.",
                 options = listOf("v141 (2017)" to "v141", "v143 (2022)" to "v143"))
         param("env.CMAKE_BUILD_TARGETS", "all")
-        param("project", "eve-frontier")
         param("env.CMAKE_INSTALL_PREFIX", ".build-artifact")
         param("env.CMAKE_CONFIG_TYPE", configType)
         param("env.SENTRY_PROJECT", "exefile-crashes")
@@ -65,7 +65,7 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
     }
 
     vcs {
-        root(AbsoluteId("Carbon_Scheduler_2_SchedulerFeatureKotlin"),"+:. => %github_checkout_folder%")
+        root(DslContext.settingsRootId, "+:. => %github_checkout_folder%")
         root(AbsoluteId("CarbonPipelineTools"), "+:. => carbon_pipeline_tools")
         cleanCheckout = true
     }
@@ -99,7 +99,7 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
         exec {
             name = "Configure"
             path = "cmake"
-            arguments = "--preset %env.CMAKE_PRESET% -S %teamcity.build.checkoutDir%/%github_checkout_folder% -B %env.CMAKE_BUILD_FOLDER% -DCMAKE_INSTALL_PREFIX=%env.CMAKE_INSTALL_PREFIX% -DINSTALL_TO_MONOLITH=ON -DVCPKG_INSTALL_OPTIONS=--x-buildtrees-root=%teamcity.build.checkoutDir%/%github_checkout_folder%/buildtrees"
+            arguments = "--preset %env.CMAKE_PRESET% -S %teamcity.build.checkoutDir%/%github_checkout_folder% -B %env.CMAKE_BUILD_FOLDER% -DINSTALL_TO_MONOLITH=ON -DCMAKE_INSTALL_PREFIX=%env.CMAKE_INSTALL_PREFIX% -DVCPKG_INSTALL_OPTIONS=--x-buildtrees-root=%teamcity.build.checkoutDir%/%github_checkout_folder%/buildtrees"
         }
         exec {
             name = "Build"
@@ -193,27 +193,29 @@ class CarbonBuildWindows(buildName: String, configType: String, preset: String) 
 
     triggers {
         vcs {
-            triggerRules = "+:root=${AbsoluteId("Carbon_Scheduler_2_SchedulerFeatureKotlin").id}:."
-
-            param("disabled", "true")
+            triggerRules = "+:root=${DslContext.settingsRootId.id}:."
+             branchFilter = """
+                            +:<default>
+                            +pr:*
+                        """.trimIndent()
         }
     }
 
     features {
         pullRequests {
-            vcsRootExtId = "${AbsoluteId("Carbon_Scheduler_2_SchedulerFeatureKotlin")}"
+            vcsRootExtId = "${DslContext.settingsRootId.id}"
             provider = github {
                 authType = token {
-                    token = "%GITHUB_CARBON_PAT%"
+                    token = "%GITHUB_TEAMCITY_TOKEN%"
                 }
-                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER_OR_COLLABORATOR
+                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER
             }
         }
         commitStatusPublisher {
             publisher = github {
                 githubUrl = "https://api.github.com"
                 authType = personalToken {
-                    token = "%GITHUB_CARBON_PAT%"
+                    token = "%GITHUB_TEAMCITY_TOKEN%"
                 }
             }
         }

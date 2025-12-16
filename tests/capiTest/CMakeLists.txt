@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.31)
 
 project(SchedulerCapiTest)
 
-find_package(Python3 COMPONENTS Development REQUIRED)
+find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 
 include(GoogleTest)
@@ -33,6 +33,9 @@ target_link_libraries(SchedulerCapiTest PRIVATE GTest::gtest GTest::gtest_main P
 
 # Generate paths Include for each config
 # Allows for easy use inside IDE
+
+string(REPLACE "\\" "/" Python3_STDLIB_PATH_C ${Python3_STDLIB})
+
 file (GENERATE
     OUTPUT "PackagePaths_$<CONFIG>.h"
     CONTENT
@@ -41,7 +44,7 @@ file (GENERATE
 #include <string>
 std::wstring SCHEDULER_CEXTENSION_MODULE_PATH = L\"$<TARGET_FILE_DIR:Scheduler>\";
 std::wstring SCHEDULER_PACKAGE_PATH = L\"${CMAKE_SOURCE_DIR}/python\";
-std::wstring STDLIB_PATH = L\"${Python3_STDLIB}\";
+std::wstring STDLIB_PATH = L\"${Python3_STDLIB_PATH_C}\";
 std::wstring GREENLET_CEXTENSION_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}\";
 std::wstring GREENLET_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}/python\";
 "
