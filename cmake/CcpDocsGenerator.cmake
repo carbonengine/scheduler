@@ -33,7 +33,7 @@ function(create_carbon_docs_sphinx_target)
 
     find_package(Doxygen REQUIRED)
 
-    set(PIP_PACKAGES sphinx breathe myst_parser sphinx_rtd_theme)
+    set(PIP_PACKAGES sphinx==8.2.3 breathe myst_parser sphinx_rtd_theme)
 
     _create_venv_and_install_packages(
             PYTHON_EXE ${arg_PYTHON_EXE}
@@ -65,12 +65,11 @@ function(create_carbon_docs_sphinx_target)
 
     message(STATUS "Working directory is ${CMAKE_CURRENT_BINARY_DIR}")
     message(STATUS "Command: ${SPHINX_COMMAND}")
-    message(STATUS "Python Path is: ${arg_PYTHONPATH_ENV}")
 
     add_custom_target(${arg_SPHINX_TARGET_NAME} ALL
             COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${arg_PYTHONPATH_ENV} ${SPHINX_COMMAND}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${arg_VENV_NAME}
-            DEPENDS ${DOXYGEN_INDEX_FILE}
+            DEPENDS ${arg_DOXYGEN_TARGET_NAME}
             COMMENT "Generating documentation with Sphinx")
 
     # Install rule for documentation
