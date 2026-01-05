@@ -3,7 +3,14 @@
 #include "InterpreterWithSchedulerModule.h"
 
 // Include build config specific paths
-#include <PackagePaths.h>
+// #include <PackagePaths.h>
+// #include <codecvt>
+// #include <locale>
+// #include <string>
+// #include <iostream>
+// #include <cstdint>
+
+#include <StringConversions.h>
 
 static SchedulerCAPI* s_schedulerApi = nullptr;
 static int s_testValue = 0;
@@ -218,6 +225,12 @@ void InterpreterWithSchedulerModule::SetUp()
 		PyErr_Print();
 		exit( -1 );
 	}
+
+	std::wstring SCHEDULER_CEXTENSION_MODULE_PATH = UTF8ToWide(std::getenv("SCHEDULER_CEXTENSION_MODULE_PATH"));
+	std::wstring SCHEDULER_PACKAGE_PATH =			UTF8ToWide(std::getenv("SCHEDULER_PACKAGE_PATH"));
+	std::wstring STDLIB_PATH =						UTF8ToWide(std::getenv("STDLIB_PATH"));
+	std::wstring GREENLET_CEXTENSION_MODULE_PATH =	UTF8ToWide(std::getenv("GREENLET_CEXTENSION_MODULE_PATH"));
+	std::wstring GREENLET_MODULE_PATH =				UTF8ToWide(std::getenv("GREENLET_MODULE_PATH"));
 
 	// Setup search paths
 	status = PyWideStringList_Append( &config.module_search_paths, SCHEDULER_CEXTENSION_MODULE_PATH.c_str() );

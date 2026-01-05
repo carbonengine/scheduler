@@ -29,36 +29,14 @@ target_include_directories(SchedulerCapiTest
 
 target_precompile_headers(SchedulerCapiTest PRIVATE StdAfx.h)
 
-target_link_libraries(SchedulerCapiTest PRIVATE GTest::gtest GTest::gtest_main Python3::Python)
+target_link_libraries(SchedulerCapiTest PRIVATE GTest::gtest GTest::gtest_main Python3::Python CcpCore)
 
 # Generate paths Include for each config
-# Allows for easy use inside IDE
-
-string(REPLACE "\\" "/" Python3_STDLIB_PATH_C ${Python3_STDLIB})
-
-file (GENERATE
-    OUTPUT "PackagePaths_$<CONFIG>.h"
-    CONTENT
-"
-#pragma once
-#include <string>
-std::wstring SCHEDULER_CEXTENSION_MODULE_PATH = L\"$<TARGET_FILE_DIR:Scheduler>\";
-std::wstring SCHEDULER_PACKAGE_PATH = L\"${CMAKE_SOURCE_DIR}/python\";
-std::wstring STDLIB_PATH = L\"${Python3_STDLIB_PATH_C}\";
-std::wstring GREENLET_CEXTENSION_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}\";
-std::wstring GREENLET_MODULE_PATH = L\"${GREENLET_IMPORTED_LOCATION_DIR}/python\";
-"
-)
-
-cmake_policy(SET CMP0175 OLD) # Allows us to use OUTPUT with PRE_BUILD in add_custom_command
-add_custom_command (
-        COMMAND ${CMAKE_COMMAND} "-E" "copy_if_different" "PackagePaths_$<CONFIG>.h" "PackagePaths.h"
-        VERBATIM
-        PRE_BUILD
-        DEPENDS  "PackagePaths_$<CONFIG>.h"
-        OUTPUT   "PackagePaths.h"
-        COMMENT  "Creating PackagePaths.h file"
-)
+set(SCHEDULER_CEXTENSION_MODULE_PATH $<TARGET_FILE_DIR:Scheduler>)
+set(SCHEDULER_PACKAGE_PATH "${CMAKE_SOURCE_DIR}/python")
+set(STDLIB_PATH ${Python3_STDLIB})
+set(GREENLET_CEXTENSION_MODULE_PATH ${GREENLET_IMPORTED_LOCATION_DIR})
+set(GREENLET_MODULE_PATH ${GREENLET_IMPORTED_LOCATION_DIR}/python)
 
 add_custom_target(GeneratePackagePathsHeader DEPENDS "PackagePaths.h")
 add_dependencies(SchedulerCapiTest GeneratePackagePathsHeader)
@@ -72,10 +50,16 @@ if (WIN32)
             COMMAND_EXPAND_LISTS
             VERBATIM
     )
-endif ()
+endif()
+
 gtest_discover_tests(
         SchedulerCapiTest capiTests
         DISCOVERY_MODE PRE_TEST
         PROPERTIES
         ENVIRONMENT "BUILDFLAVOR=$<LOWER_CASE:$<CONFIG>>"
+        ENVIRONMENT "SCHEDULER_CEXTENSION_MODULE_PATH=${SCHEDULER_CEXTENSION_MODULE_PATH}"
+        ENVIRONMENT "SCHEDULER_PACKAGE_PATH=${SCHEDULER_PACKAGE_PATH}"
+        ENVIRONMENT "STDLIB_PATH=${STDLIB_PATH}"
+        ENVIRONMENT "GREENLET_CEXTENSION_MODULE_PATH=${GREENLET_CEXTENSION_MODULE_PATH}"
+        ENVIRONMENT "GREENLET_MODULE_PATH=${GREENLET_MODULE_PATH}"
 )
