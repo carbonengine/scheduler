@@ -1,3 +1,4 @@
+# Copyright © 2025 CCP ehf.
 function(_create_venv_and_install_packages)
     set(options "")
     set(single_value_keywords "PYTHON_EXE;VENV_NAME")
@@ -31,7 +32,7 @@ function(create_carbon_docs_sphinx_target)
             "${options}" "${single_value_keywords}" "${multi_value_keywords}"
     )
 
-    find_package(Doxygen)
+    find_package(Doxygen REQUIRED)
 
     set(PIP_PACKAGES sphinx breathe myst_parser sphinx_rtd_theme)
 
@@ -63,14 +64,10 @@ function(create_carbon_docs_sphinx_target)
         set(SPHINX_COMMAND bin/sphinx-build -E -b html -D breathe_projects.doxygen=${CMAKE_CURRENT_BINARY_DIR}/docs/xml -c ${arg_SPHINX_SOURCE} ${arg_SPHINX_SOURCE} ${arg_SPHINX_BUILD})
     endif()
 
-    message(STATUS "Working directory is ${CMAKE_CURRENT_BINARY_DIR}")
-    message(STATUS "Command: ${SPHINX_COMMAND}")
-    message(STATUS "Python Path is: ${arg_PYTHONPATH_ENV}")
-
     add_custom_target(${arg_SPHINX_TARGET_NAME} ALL
-            COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${arg_PYTHONPATH_ENV} ${SPHINX_COMMAND} --fail-on-warning
+            COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${arg_PYTHONPATH_ENV} ${SPHINX_COMMAND}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${arg_VENV_NAME}
-            DEPENDS ${DOXYGEN_INDEX_FILE}
+            DEPENDS ${arg_DOXYGEN_TARGET_NAME}
             COMMENT "Generating documentation with Sphinx")
 
     # Install rule for documentation

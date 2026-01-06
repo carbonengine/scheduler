@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.30.1)
 project(Scheduler)
 
-include(cmake/CcpGlobalSettings.cmake)
-include(cmake/CcpVendorUtilities.cmake)
 include(cmake/CcpTargetConfigurations.cmake)
 include(cmake/CcpDocsGenerator.cmake)
 include(cmake/CcpPackageConfigHelpers.cmake)
+include(cmake/CcpBuildConfigurations.cmake)
 
 find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 find_package(greenlet CONFIG REQUIRED)
@@ -83,9 +82,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     # Store python path in environment for subsequent build steps
     if(WIN32)
-        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python\;$<TARGET_FILE_DIR:Scheduler>\;${GREENLET_IMPORTED_LOCATION_DIR}/python\;${GREENLET_IMPORTED_LOCATION_DIR}")
+        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python\;$<TARGET_FILE_DIR:Scheduler>\;${GREENLET_IMPORTED_LOCATION_DIR}/python\;${GREENLET_IMPORTED_LOCATION_DIR}\;${Python3_STDLIB}")
     elseif(APPLE)
-        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python:$<TARGET_FILE_DIR:Scheduler>:${GREENLET_IMPORTED_LOCATION_DIR}/python:${GREENLET_IMPORTED_LOCATION_DIR}")
+        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python:$<TARGET_FILE_DIR:Scheduler>:${GREENLET_IMPORTED_LOCATION_DIR}/python:${GREENLET_IMPORTED_LOCATION_DIR}:${Python3_STDLIB}")
     endif()
 
     # Documentation generation is constrained to release builds

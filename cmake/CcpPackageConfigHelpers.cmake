@@ -1,3 +1,4 @@
+# Copyright © 2025 CCP ehf.
 #[===[
 Note: Use of this file is deprecated, but is being kept around for backwards compatability purposes. It will be deleted soon
 
@@ -23,8 +24,6 @@ commands when creating the `<PackageName>Config.cmake` file for installing a CCP
 resulting package adhere to CCP's vendor folder structure.
 
 ]===]
-include(cmake/CcpVendorUtilities.cmake)
-
 function(configure_ccp_vendor_config_file)
     cmake_parse_arguments(CCP_PACKAGE_CONFIG "EXPORT_DLL" "TARGET;DESTINATION" "DEPENDENCIES;CONFIGURATIONS" ${ARGN})
     set(CCP_PACKAGE_CONFIG_TARGET_DEPENDENCIES "")
