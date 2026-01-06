@@ -64,9 +64,6 @@ function(create_carbon_docs_sphinx_target)
         set(SPHINX_COMMAND bin/sphinx-build -E -b html -D breathe_projects.doxygen=${CMAKE_CURRENT_BINARY_DIR}/docs/xml -c ${arg_SPHINX_SOURCE} ${arg_SPHINX_SOURCE} ${arg_SPHINX_BUILD})
     endif()
 
-    message(STATUS "Working directory is ${CMAKE_CURRENT_BINARY_DIR}")
-    message(STATUS "Command: ${SPHINX_COMMAND}")
-
     add_custom_target(${arg_SPHINX_TARGET_NAME} ALL
             COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${arg_PYTHONPATH_ENV} ${SPHINX_COMMAND}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${arg_VENV_NAME}
