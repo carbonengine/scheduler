@@ -1,3 +1,4 @@
+# Copyright © 2025 CCP ehf.
 if (NOT _CCP_TOOLCHAIN_FILE_LOADED)
     set(_CCP_TOOLCHAIN_FILE_LOADED 1)
 

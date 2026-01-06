@@ -2,14 +2,6 @@
 
 #include "InterpreterWithSchedulerModule.h"
 
-// Include build config specific paths
-// #include <PackagePaths.h>
-// #include <codecvt>
-// #include <locale>
-// #include <string>
-// #include <iostream>
-// #include <cstdint>
-
 #include <StringConversions.h>
 
 static SchedulerCAPI* s_schedulerApi = nullptr;

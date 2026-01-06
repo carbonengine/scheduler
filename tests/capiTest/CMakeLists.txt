@@ -38,9 +38,6 @@ set(STDLIB_PATH ${Python3_STDLIB})
 set(GREENLET_CEXTENSION_MODULE_PATH ${GREENLET_IMPORTED_LOCATION_DIR})
 set(GREENLET_MODULE_PATH ${GREENLET_IMPORTED_LOCATION_DIR}/python)
 
-add_custom_target(GeneratePackagePathsHeader DEPENDS "PackagePaths.h")
-add_dependencies(SchedulerCapiTest GeneratePackagePathsHeader)
-
 if (WIN32)
     add_custom_command(
             TARGET SchedulerCapiTest POST_BUILD

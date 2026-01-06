@@ -1,3 +1,4 @@
+# Copyright © 2025 CCP ehf.
 function(_create_venv_and_install_packages)
     set(options "")
     set(single_value_keywords "PYTHON_EXE;VENV_NAME")
@@ -33,7 +34,7 @@ function(create_carbon_docs_sphinx_target)
 
     find_package(Doxygen REQUIRED)
 
-    set(PIP_PACKAGES sphinx==8.2.3 breathe myst_parser sphinx_rtd_theme)
+    set(PIP_PACKAGES sphinx breathe myst_parser sphinx_rtd_theme)
 
     _create_venv_and_install_packages(
             PYTHON_EXE ${arg_PYTHON_EXE}
