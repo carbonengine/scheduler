@@ -2,15 +2,15 @@
   "dependencies": [
     {
       "name": "python3",
-      "version>=": "3.12.9"
+      "version>=": "3.12.9#1"
     },
     {
       "name": "greenlet",
-      "version>=": "3.0.3#7"
+      "version>=": "3.0.3"
     },
     {
       "name": "carbon-core",
-      "version>=": "2.3.2#1"
+      "version>=": "2.4.0"
     },
     {
       "name": "gtest",
