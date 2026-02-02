@@ -192,7 +192,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
                 CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
-                LIBRARY DESTINATION lib/
+                LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,lib,bin>
         )
         # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
         install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
