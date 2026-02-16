@@ -78,13 +78,14 @@ endif()
 # Provide an install target iff this is the top level project only
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     get_target_property(GREENLET_IMPORTED_LOCATION Greenlet IMPORTED_LOCATION)
+    get_target_property(GREENLET_PYTHON_MODULE_DIR Greenlet PYTHON_MODULE_DIR)
     get_filename_component(GREENLET_IMPORTED_LOCATION_DIR ${GREENLET_IMPORTED_LOCATION} DIRECTORY)
 
     # Store python path in environment for subsequent build steps
     if(WIN32)
-        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python\;$<TARGET_FILE_DIR:Scheduler>\;${GREENLET_IMPORTED_LOCATION_DIR}/python\;${GREENLET_IMPORTED_LOCATION_DIR}\;${Python3_STDLIB}")
+        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python\;$<TARGET_FILE_DIR:Scheduler>\;${GREENLET_PYTHON_MODULE_DIR}\;${GREENLET_IMPORTED_LOCATION_DIR}\;${Python3_STDLIB}")
     elseif(APPLE)
-        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python:$<TARGET_FILE_DIR:Scheduler>:${GREENLET_IMPORTED_LOCATION_DIR}/python:${GREENLET_IMPORTED_LOCATION_DIR}:${Python3_STDLIB}")
+        SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python:$<TARGET_FILE_DIR:Scheduler>:${GREENLET_PYTHON_MODULE_DIR}:${GREENLET_IMPORTED_LOCATION_DIR}:${Python3_STDLIB}")
     endif()
 
     # Documentation generation is constrained to release builds
