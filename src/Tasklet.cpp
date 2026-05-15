@@ -398,7 +398,9 @@ bool Tasklet::SwitchTo( )
 
         m_firstRun = false;
 
-		ret = PyGreenlet_Switch( m_greenlet, args, kwargs );
+		PyObject* switchResult = PyGreenlet_Switch( m_greenlet, args, kwargs );
+		ret = ( switchResult != nullptr );
+		Py_XDECREF( switchResult );
 
         // Clear arguments
 		SetArguments( nullptr );
