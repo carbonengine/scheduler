@@ -157,29 +157,29 @@ public:
 
     void Clear();
 
-    void SetMethodName( std::string& methodName);
+    void SetMethodName(const std::string& methodName);
 
-    std::string GetMethodName();
+    const std::string& GetMethodName();
 
     void SetModuleName(std::string& moduleName);
 
-	std::string GetModuleName();
+	const std::string& GetModuleName();
 
-    void SetContext( std::string& context );
+    void SetContext(const std::string& context );
 
-    std::string GetContext();
+    const std::string& GetContext();
 
-    std::string GetFilename();
+    const std::string& GetFilename();
 
-    void SetFilename( std::string& fileName );
+    void SetFilename(const std::string& fileName );
 
     long GetLineNumber();
 
     void SetLineNumber( long lineNumber );
 
-    std::string GetParentCallsite();
+    const std::string& GetParentCallsite();
 
-    void SetParentCallsite( std::string& parentCallsite );
+    void SetParentCallsite(const std::string& parentCallsite );
 
     long long GetStartTime();
 	
