@@ -1390,37 +1390,37 @@ bool Tasklet::BelongsToCurrentThread()
     return ret;
 }
 
-std::string Tasklet::GetMethodName()
+const std::string& Tasklet::GetMethodName()
 {
 	return m_methodName;
 }
 
-void Tasklet::SetMethodName(std::string& methodName)
+void Tasklet::SetMethodName(const std::string& methodName)
 {
 	m_methodName = methodName;
 }
 
-std::string Tasklet::GetModuleName()
+const std::string& Tasklet::GetModuleName()
 {
 	return m_moduleName;
 }
 
-void Tasklet::SetModuleName(std::string& moduleName)
+void Tasklet::SetModuleName(const std::string& moduleName)
 {
 	m_moduleName = moduleName;
 }
 
-std::string Tasklet::GetContext()
+const std::string& Tasklet::GetContext()
 {
     return m_context;
 }
 
-std::string Tasklet::GetFilename()
+const std::string& Tasklet::GetFilename()
 {
 	return m_fileName;
 }
 
-void Tasklet::SetFilename( std::string& fileName )
+void Tasklet::SetFilename(const std::string& fileName )
 {
 	m_fileName = fileName;
 }
@@ -1435,18 +1435,18 @@ void Tasklet::SetLineNumber( long lineNumber )
 	m_lineNumber = lineNumber;
 }
 
-void Tasklet::SetContext(std::string& context)
+void Tasklet::SetContext(const std::string& context)
 {
 	m_context = context;
 }
 
 
-std::string Tasklet::GetParentCallsite()
+const std::string& Tasklet::GetParentCallsite()
 {
 	return m_parentCallsite;
 }
 
-void Tasklet::SetParentCallsite(std::string& parentCallsite)
+void Tasklet::SetParentCallsite(const std::string& parentCallsite)
 {
 	m_parentCallsite = parentCallsite;
 }
