@@ -197,7 +197,7 @@ void Tasklet::Uninitialise()
 
 bool Tasklet::Insert()
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::Insert()", __FILE__, __LINE__, tracy::Color::LightGreen);
+	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::Insert()", __FILE__, __LINE__, CcpColor::LightGreen);
     if ( m_blocked )
     {
 		PyErr_SetString( PyExc_RuntimeError, "Failed to insert tasklet: Cannot insert blocked tasklet" );
@@ -222,7 +222,7 @@ bool Tasklet::Insert()
 
 bool Tasklet::SwitchImplementation()
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::SwitchImplementation()", __FILE__, __LINE__, tracy::Color::LightGreen);
+	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::SwitchImplementation()", __FILE__, __LINE__, CcpColor::LightGreen);
 	// Remove the calling tasklet
 	if( !m_alive )
 	{
