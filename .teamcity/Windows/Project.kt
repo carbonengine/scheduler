@@ -33,11 +33,6 @@ object Project : Project({
     buildType(Internal)
     buildType(TrinityDev)
     buildType(Release)
-
-    buildType(Debug_v145)
-    buildType(Internal_v145)
-    buildType(TrinityDev_v145)
-    buildType(Release_v145)
 })
 
 
