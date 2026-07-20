@@ -374,7 +374,7 @@ bool ScheduleManager::Yield()
 
 bool ScheduleManager::RunTaskletsForTime( long long timeout )
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunTaskletsForTime()", __FILE__, __LINE__, tracy::Color::LightGreen);
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunTaskletsForTime()", __FILE__, __LINE__, CcpColor::LightGreen);
 	s_numberOfTaskletsCompletedLastRunWithTimeout = 0;
 
     s_numberOfTaskletsSwitchedLastRunWithTimeout = 0;
@@ -402,7 +402,7 @@ bool ScheduleManager::RunTaskletsForTime( long long timeout )
 
 bool ScheduleManager::RunNTasklets( int n )
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunNTasklets()", __FILE__, __LINE__, tracy::Color::LightGreen);
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunNTasklets()", __FILE__, __LINE__, CcpColor::LightGreen);
     m_taskletLimit = n;
 
     m_runType = RunType::TASKLET_LIMITED;
@@ -420,7 +420,7 @@ bool ScheduleManager::RunNTasklets( int n )
 
 bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::Run()", __FILE__, __LINE__, tracy::Color::LightGreen);
+	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::Run()", __FILE__, __LINE__, CcpColor::LightGreen);
     Tasklet* baseTasklet = nullptr;
 
     Tasklet* endTasklet = nullptr;
