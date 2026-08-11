@@ -2,6 +2,8 @@
 
 #include <CcpTelemetry.h>
 
+#include "Utils.h"
+
 #if _WIN32
 // WinBase.h defines a Yield() macro which clashes with the method name on scheduler
 #ifdef Yield
@@ -374,7 +376,7 @@ bool ScheduleManager::Yield()
 
 bool ScheduleManager::RunTaskletsForTime( long long timeout )
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunTaskletsForTime()", __FILE__, __LINE__, CcpColor::LightGreen);
+	TELEMETRY_ZONE( "ScheduleManager::RunTaskletsForTime" );
 	s_numberOfTaskletsCompletedLastRunWithTimeout = 0;
 
     s_numberOfTaskletsSwitchedLastRunWithTimeout = 0;
@@ -402,7 +404,7 @@ bool ScheduleManager::RunTaskletsForTime( long long timeout )
 
 bool ScheduleManager::RunNTasklets( int n )
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::RunNTasklets()", __FILE__, __LINE__, CcpColor::LightGreen);
+	TELEMETRY_ZONE( "ScheduleManager::RunNTasklets()" );
     m_taskletLimit = n;
 
     m_runType = RunType::TASKLET_LIMITED;
@@ -420,7 +422,7 @@ bool ScheduleManager::RunNTasklets( int n )
 
 bool ScheduleManager::Run( Tasklet* startTasklet /* = nullptr */ )
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "ScheduleManager::Run()", __FILE__, __LINE__, CcpColor::LightGreen);
+	TELEMETRY_ZONE( "ScheduleManager::Run()" );
     Tasklet* baseTasklet = nullptr;
 
     Tasklet* endTasklet = nullptr;
