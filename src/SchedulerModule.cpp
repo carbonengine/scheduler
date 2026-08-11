@@ -5,6 +5,7 @@
 #include "Scheduler.h"
 
 #include <CcpMacros.h>
+#include <CCPLog.h>
 #include <string>
 
 #include <greenlet.h>
@@ -18,6 +19,8 @@
 #include "PyScheduleManager.cpp"
 
 const char* g_moduleName = "carbon-scheduler";
+
+static CcpLogChannel_t s_ch = CCP_LOG_DEFINE_CHANNEL( "Scheduler" );
 
 // End C API
 static PyObject*
@@ -1174,7 +1177,15 @@ PyMODINIT_FUNC CCP_CONCATENATE(PyInit__scheduler, CCP_BUILD_FLAVOR)(void)
     PyObject *m;
 	static SchedulerCAPI api;
 	PyObject* c_api_object;
-    
+
+	// Attempt an initial registration of the telemetry category for scheduler so that there is only one warning in the logs
+	// on initial import of the scheduler module instead of spamming warnings whenever a zone is created.
+	if ( auto [cat, ok] = CcpTelemetryCategoryRegister( "scheduler", CcpColor::LightGreen ); !ok )
+	{
+		CCP_LOGWARN_CH( s_ch, "Failed to register a telemetry category for scheduler. Telemetry zones for this module won't be emitted." );
+		// No need to early out here; module functionality isn't affected by its ability to emit telemetry.
+	}
+
     ScheduleManager::m_scheduleManagerThreadKey = PyUnicode_FromString( "SCHEDULE_MANAGER" );
 
 	//Add custom types

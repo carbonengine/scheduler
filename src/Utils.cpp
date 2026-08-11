@@ -1,5 +1,13 @@
 #include "Utils.h"
 
+const CcpTelemetryCategory& TelemetryCategory()
+{
+	// Intentionally return a category that may be "empty" if initial registration failed from the
+	// module init function. Logging a warning on registration failure here is unnecessarily noisy.
+	static const CcpTelemetryCategory& category = CcpTelemetryCategoryRegister( "scheduler" ).first;
+	return category;
+}
+
 bool StdStringFromPyObject( PyObject* obj, std::string& str )
 {
 
