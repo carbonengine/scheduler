@@ -1119,10 +1119,10 @@ bool Tasklet::Setup( PyObject* args, PyObject* kwargs )
 
 bool Tasklet::SetCallsiteData( PyObject* callable )
 {
-	m_methodName = { "unknown_method" };
-	m_moduleName = { "unknown_module" };
-	m_fileName =   { "unknown_file" };
-	m_lineNumber = { 0 };
+	m_methodName = "unknown_method";
+	m_moduleName = "unknown_module";
+	m_fileName =   "unknown_file";
+	m_lineNumber = 0;
 
 	if( PyObject_HasAttrString( callable, "__name__" ) )
 	{
