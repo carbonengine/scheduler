@@ -197,7 +197,7 @@ void Tasklet::Uninitialise()
 
 bool Tasklet::Insert()
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::Insert()", __FILE__, __LINE__, CcpColor::LightGreen);
+	TELEMETRY_ZONE( "Tasklet::Insert()" );
     if ( m_blocked )
     {
 		PyErr_SetString( PyExc_RuntimeError, "Failed to insert tasklet: Cannot insert blocked tasklet" );
@@ -222,7 +222,7 @@ bool Tasklet::Insert()
 
 bool Tasklet::SwitchImplementation()
 {
-	TelemetryZone telemetryZone(TMCM_CPP, "Tasklet::SwitchImplementation()", __FILE__, __LINE__, CcpColor::LightGreen);
+	TELEMETRY_ZONE( "Tasklet::SwitchImplementation" );
 	// Remove the calling tasklet
 	if( !m_alive )
 	{
@@ -1119,10 +1119,10 @@ bool Tasklet::Setup( PyObject* args, PyObject* kwargs )
 
 bool Tasklet::SetCallsiteData( PyObject* callable )
 {
-	m_methodName = { "unknown_method" };
-	m_moduleName = { "unknown_module" };
-	m_fileName =   { "unknown_file" };
-	m_lineNumber = { 0 };
+	m_methodName = "unknown_method";
+	m_moduleName = "unknown_module";
+	m_fileName =   "unknown_file";
+	m_lineNumber = 0;
 
 	if( PyObject_HasAttrString( callable, "__name__" ) )
 	{

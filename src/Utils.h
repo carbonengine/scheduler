@@ -23,6 +23,15 @@
 
 #include "stdafx.h"
 
+
+#include <CcpMacros.h>
+#include <CcpTelemetry.h>
+
+const CcpTelemetryCategory& TelemetryCategory();
+
+#define TELEMETRY_ZONE( zoneName ) \
+    TelemetryZone CCP_ANONYMOUS_VARIABLE( telemetryZone_ )( TelemetryCategory(), zoneName, __FILE__, __LINE__ )
+
 bool StdStringFromPyObject( PyObject* obj, std::string& str );
 
 #endif //UTILS_H

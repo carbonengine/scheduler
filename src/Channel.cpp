@@ -41,12 +41,8 @@ bool Channel::Send( PyObject* args, PyObject* exception /* = nullptr */, bool re
 
     current->SetTransferInProgress(true);
 
-	ChannelDirection direction = ChannelDirection::SENDER;
-
 	if( m_firstBlockedOnReceive == nullptr )
 	{
-		direction = ChannelDirection::RECEIVER;
-
 		// Block as there is no tasklet sending
         if( !current )
 		{
