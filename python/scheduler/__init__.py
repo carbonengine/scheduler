@@ -31,11 +31,10 @@ class QueueChannel(_scheduler.channel):
 
     def send(self, data):
         sup = super(QueueChannel, self)
-        with threading.Lock():
-            if sup.balance >= 0 and not sup.closing:
-                self.data_queue.append((True, data))
-            else:
-                sup.send(data)
+        if sup.balance >= 0 and not sup.closing:
+            self.data_queue.append((True, data))
+        else:
+            sup.send(data)
 
     def send_exception(self, exc, *args):
         self.send_throw(exc, args)
@@ -43,25 +42,23 @@ class QueueChannel(_scheduler.channel):
     def send_throw(self, exc, value=None, tb=None):
         """call with similar arguments as raise keyword"""
         sup = super(QueueChannel, self)
-        with threading.Lock():
-            if sup.balance >= 0 and not sup.closing:
-                self.data_queue.append((False, (exc, value, tb)))
-            else:
-                #deal with channel.send_exception signature
-                sup.send_throw(exc, value, tb)
+        if sup.balance >= 0 and not sup.closing:
+            self.data_queue.append((False, (exc, value, tb)))
+        else:
+            #deal with channel.send_exception signature
+            sup.send_throw(exc, value, tb)
 
     def receive(self):
-        with threading.Lock():
-            if not self.data_queue:
-                return super(QueueChannel, self).receive()
-            ok, data = self.data_queue.popleft()
-            if ok:
-                return data
-            exc, value, tb = data
-            try:
-                raise exc(value).with_traceback(tb)
-            finally:
-                tb = None
+        if not self.data_queue:
+            return super(QueueChannel, self).receive()
+        ok, data = self.data_queue.popleft()
+        if ok:
+            return data
+        exc, value, tb = data
+        try:
+            raise exc(value).with_traceback(tb)
+        finally:
+            tb = None
 
     #iterator protocol
     def send_sequence(self, sequence):
