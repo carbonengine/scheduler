@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "python3",
-      "version>=": "3.12.9#1"
+      "version>=": "3.12.9#4"
     },
     {
       "name": "greenlet",
