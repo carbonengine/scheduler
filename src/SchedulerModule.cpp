@@ -5,7 +5,7 @@
 #include "Scheduler.h"
 
 #include <CcpMacros.h>
-#include <CCPLog.h>
+#include <CcpLog.h>
 #include <string>
 
 #include <greenlet.h>

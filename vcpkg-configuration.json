@@ -1,20 +1,21 @@
 {
   "default-registry": {
     "kind": "git",
-    "baseline": "242ac6932a9cd2607332969129e9572516f28d65",
+    "baseline": "15b12b99a227d51e21c86dffd40385439eac87a0",
     "repository": "https://github.com/microsoft/vcpkg.git"
   },
   "registries": [
     {
       "kind": "git",
       "repository": "https://github.com/carbonengine/vcpkg-registry.git",
-      "baseline": "d431d05377ae8d620c644c49c3f4d1bd974cee18",
+      "baseline": "fefc678ce92b41e53324d08a5485be8514256432",
       "packages": [
         "python3",
         "ccp-debug-info",
         "carbon-core",
         "greenlet",
-        "tracy"
+        "tracy",
+        "zlib"
       ]
     }
   ]

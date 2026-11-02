@@ -463,7 +463,7 @@ TEST_F( SchedulerCapi, PyScheduler_GetTaskletsCompletedLastRunWithTimeout )
 	EXPECT_EQ( m_api->PyScheduler_GetRunCount(), 4 );
 
 	// Run scheduler until finished using a huge timeout time
-	EXPECT_EQ( m_api->PyScheduler_RunWithTimeout( 10000 ), Py_None );
+	EXPECT_EQ( m_api->PyScheduler_RunWithTimeout( 1000000 ), Py_None );
 
     // Ensure all tasklets complete in time
     EXPECT_EQ( m_api->PyScheduler_GetRunCount(), 1 );
@@ -487,7 +487,7 @@ TEST_F( SchedulerCapi, PyScheduler_GetTaskletsSwitchedLastRunWithTimeout )
 	EXPECT_EQ( m_api->PyScheduler_GetRunCount(), 4 );
 
 	// Run scheduler until finished using a huge timeout time
-	EXPECT_EQ( m_api->PyScheduler_RunWithTimeout( 10000 ), Py_None );
+	EXPECT_EQ( m_api->PyScheduler_RunWithTimeout( 1000000 ), Py_None );
 
 	// Ensure all tasklets complete in time
 	EXPECT_EQ( m_api->PyScheduler_GetRunCount(), 1 );

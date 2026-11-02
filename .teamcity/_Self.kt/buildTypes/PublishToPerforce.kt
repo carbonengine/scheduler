@@ -249,6 +249,78 @@ class Publish(perforce_publish_path: String) : BuildType({
                 artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Windows.TrinityDev.depParamRefs["env.GIT_TAG_HASH"]}"
             }
         }
+        dependency(Linux.x64_Debug) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.x64_Debug.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
+        dependency(Linux.x64_Internal) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.x64_Internal.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
+        dependency(Linux.x64_Release) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.x64_Release.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
+        dependency(Linux.x64_TrinityDev) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.x64_TrinityDev.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
+	dependency(Linux.arm64_Debug) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.arm64_Debug.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
+        dependency(Linux.arm64_Internal) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.arm64_Internal.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
+        dependency(Linux.arm64_Release) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.arm64_Release.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
+        dependency(Linux.arm64_TrinityDev) {
+            snapshot {
+                onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+
+            artifacts {
+                artifactRules = "artifact.zip!**=>%perforce_path_to_publish_into%/${Linux.arm64_TrinityDev.depParamRefs["env.GIT_TAG_HASH"]}"
+            }
+        }
         artifacts(AbsoluteId("Infrastructure_MetaTeamCity_Tools_TeamcityChanges")) {
             buildRule = lastSuccessful()
             artifactRules = "binaries.zip!*=>"

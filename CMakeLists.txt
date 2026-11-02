@@ -84,7 +84,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Store python path in environment for subsequent build steps
     if(WIN32)
         SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python\;$<TARGET_FILE_DIR:Scheduler>\;${GREENLET_PYTHON_MODULE_DIR}\;${GREENLET_IMPORTED_LOCATION_DIR}\;${Python3_STDLIB}")
-    elseif(APPLE)
+    elseif(APPLE OR LINUX)
         SET(ENV{PYTHONPATH} "${CMAKE_SOURCE_DIR}/python:$<TARGET_FILE_DIR:Scheduler>:${GREENLET_PYTHON_MODULE_DIR}:${GREENLET_IMPORTED_LOCATION_DIR}:${Python3_STDLIB}")
     endif()
 
@@ -170,7 +170,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
                 CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
-                LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,lib,bin>/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
+                LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin,Linux>,lib,bin>/${CCP_PLATFORM}/${CCP_ARCHITECTURE}/${CCP_TOOLSET}/
         )
         # Install rule for available public headers
         install(FILES ${PUBLIC_HEADER_FILES} DESTINATION include)
@@ -191,7 +191,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                 TARGETS Scheduler
                 EXPORT SchedulerTargets
                 CONFIGURATIONS ${CMAKE_CONFIGURATION_TYPES}
-                LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,lib,bin>
+                LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin,Linux>,lib,bin>
         )
         # Install rule to ensure that our runtime and linker files are in the expected, platform-specific folders
         install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
