@@ -141,7 +141,7 @@ class CarbonBuildLinux(buildName: String, configType: String, preset: String, ag
     features {
         runInDocker {
             id = "RunInDocker"
-            dockerImage = "906334554726.dkr.ecr.eu-west-1.amazonaws.com/carbon-linux-gcc:0"
+            dockerImage = "906334554726.dkr.ecr.eu-west-1.amazonaws.com/carbon-linux-gcc:latest"
             dockerRunParameters = "--user=1001:1001"
         }
         dockerSupport {
